@@ -308,7 +308,8 @@
             "ignoreChannels": "",
             "ignoreGuilds": "",
             "showEditDiffs": false,
-            "separatedDiffs": false
+            "separatedDiffs": false,
+            "logDeletedAttachments": true
         },
         "MoreQuickReactions": {
             "enabled": false
@@ -945,7 +946,7 @@
             "enabled": false
         },
         "NewPluginsManager": {
-            "enabled": true
+            "enabled": false
         },
         "NoNitroUpsell": {
             "enabled": false
@@ -1080,7 +1081,8 @@
             "completeVideoQuestsQuicker": false,
             "resumeQuestIDs": {},
             "acknowledgedNotices": {
-                "quest-ban-warning-2026-08-07": true
+                "quest-ban-warning-2026-08-07": true,
+                "quest-ban-warning-2026-08-26": true
             }
         },
         "Quoter": {
@@ -1410,6 +1412,9 @@
         },
         "NoticesAPI": {
             "enabled": true
+        },
+        "VoiceMessagesInBackground": {
+            "enabled": false
         }
     },
     "uiElements": {
@@ -1427,7 +1432,7 @@
         "authenticated": false,
         "url": "https://cloud.equicord.org/",
         "settingsSync": false,
-        "settingsSyncVersion": 1787598369529
+        "settingsSyncVersion": 1788452368416
     },
     "ignoreResetWarning": false,
     "userCssVars": {},
