@@ -1,0 +1,119 @@
+{
+    "auto_install_extensions": {
+        "discord-presence": true,
+        "emmet": true,
+        "html": true,
+        "java": true,
+        "material-icon-theme": true,
+        "one-dark-pro": true,
+        "wakatime": true,
+    },
+
+    "autosave": "on_focus_change",
+
+    "auto_update": false,
+
+    "buffer_font_family": "JetBrainsMono Nerd Font",
+    "buffer_font_features": {
+        "calt": false,
+    },
+    "buffer_font_size": 16,
+
+    "diff_view_style": "unified",
+
+    "disable_ai": true,
+
+    "minimap": {
+        "show": "auto",
+        "thumb_border": "none",
+    },
+
+    "tabs": {
+        "file_icons": true,
+        "git_status": true,
+        "activate_on_close": "neighbour",
+        "show_diagnostics": "all",
+    },
+
+    "drag_and_drop_selection": {
+        "enabled": false,
+    },
+
+    "extend_comment_on_newline": false,
+
+    "format_on_save": "off",
+
+    "diagnostics": {
+        "inline": {
+            "enabled": true,
+        },
+    },
+
+    "git": {
+        "inline_blame": {
+            "show_commit_summary": true,
+        },
+    },
+
+    "indent_guides": {
+        "coloring": "indent_aware",
+    },
+
+    "icon_theme": "Material Icon Theme",
+
+    "journal": {
+        "hour_format": "hour24",
+    },
+
+    "lsp_document_colors": "background",
+
+    "search": {
+        "center_on_match": true,
+    },
+    "seed_search_query_from_cursor": "selection",
+
+    "soft_wrap": "editor_width",
+
+    "tab_size": 4,
+
+    "telemetry": {
+        "diagnostics": false,
+        "metrics": false,
+    },
+
+    "terminal": {
+        "blinking": "on",
+        "minimum_contrast": 0,
+    },
+
+    "theme": "One Dark Pro",
+
+    "project_panel": {
+        "dock": "left",
+        "auto_fold_dirs": false,
+    },
+
+    "collaboration_panel": {
+        "dock": "right",
+    },
+
+    "git_panel": {
+        "dock": "right",
+        "status_style": "label_color",
+    },
+
+    "outline_panel": {
+        "dock": "right",
+        "auto_fold_dirs": false,
+    },
+
+    "calls": {
+        "mute_on_join": true,
+    },
+
+    "colorize_brackets": true,
+
+    "ui_font_features": {
+        "calt": false,
+    },
+}

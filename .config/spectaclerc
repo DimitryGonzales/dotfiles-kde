@@ -1,0 +1,5 @@
+[General]
+clipboardGroup=PostScreenshotCopyImage
+
+[ImageSave]
+imageCompressionQuality=100
