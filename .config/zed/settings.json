@@ -61,6 +61,12 @@
 
     "icon_theme": "Material Icon Theme",
 
+    "inlay_hints": {
+        "enabled": true,
+        "show_type_hints": false,
+        "show_background": true
+    },
+
     "journal": {
         "hour_format": "hour24",
     },
