@@ -94,6 +94,8 @@
 
     "theme": "One Dark Pro",
 
+    "window_decorations": "server",
+
     "project_panel": {
         "dock": "left",
         "auto_fold_dirs": false,
