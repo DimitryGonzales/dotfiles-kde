@@ -1,14 +1,14 @@
 {
 	"window-size": {
-		"width": 1342,
-		"height": 757
+		"width": 1366,
+		"height": 722
 	},
 	"window-maximized": true,
 	"window-position": {
 		"x": 0,
 		"y": 0
 	},
-	"url": "https://music.youtube.com/watch?v=IK3nKs0KWq8&list=RDAMVMIK3nKs0KWq8&index=0",
+	"url": "https://music.youtube.com/watch?v=zTx3tbW3qSw&list=LM&index=0",
 	"options": {
 		"tray": true,
 		"appVisible": true,
@@ -32,6 +32,9 @@
 	},
 	"plugins": {
 		"discord": {
+			"enabled": true
+		},
+		"album-color-theme": {
 			"enabled": true
 		}
 	},
