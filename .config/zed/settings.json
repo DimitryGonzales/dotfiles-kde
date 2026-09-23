@@ -11,8 +11,6 @@
 
     "autosave": "on_focus_change",
 
-    "auto_update": false,
-
     "buffer_font_family": "JetBrainsMono Nerd Font",
     "buffer_font_features": {
         "calt": false,
