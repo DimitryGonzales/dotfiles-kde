@@ -6,7 +6,7 @@ Personal dotfiles with configuration files for applications and the [KDE Plasma]
 
 ```bash
 sudo pacman -S --needed yadm
-yadm clone "[https://github.com/DimitryGonzales/dotfiles-kde.git](https://github.com/DimitryGonzales/dotfiles-kde.git)"
+yadm clone https://github.com/DimitryGonzales/dotfiles-kde.git
 yadm checkout --force
 ```
 
