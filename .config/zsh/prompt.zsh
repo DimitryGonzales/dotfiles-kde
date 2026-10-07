@@ -13,10 +13,12 @@ precmd() {
     if [[ "$prompt_needs_newline" == true ]]; then
         echo
     fi
+
     prompt_needs_newline=true
 }
 
 clear() {
     prompt_needs_newline=false
+
     command clear
 }
