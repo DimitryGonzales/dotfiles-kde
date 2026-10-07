@@ -1319,7 +1319,8 @@
             "jsonGateway": false,
             "noBulletPoints": false,
             "accountStandingButton": false,
-            "hideVoiceIndicatorForMutedChannels": false
+            "hideVoiceIndicatorForMutedChannels": false,
+            "noOnboarding": false
         },
         "Settings": {
             "enabled": true,
@@ -1415,6 +1416,18 @@
         },
         "VoiceMessagesInBackground": {
             "enabled": false
+        },
+        "AddAttachments": {
+            "enabled": false
+        },
+        "BetterImageEditor": {
+            "enabled": false
+        },
+        "ReactionTimestamps": {
+            "enabled": false
+        },
+        "FixDiscordCss": {
+            "enabled": true
         }
     },
     "uiElements": {
@@ -1432,9 +1445,10 @@
         "authenticated": false,
         "url": "https://cloud.equicord.org/",
         "settingsSync": false,
-        "settingsSyncVersion": 1790188875190
+        "settingsSyncVersion": 1791320682033
     },
     "ignoreResetWarning": false,
     "userCssVars": {},
-    "windowsMaterial": "none"
+    "windowsMaterial": "none",
+    "nativeTitleBar": false
 }
