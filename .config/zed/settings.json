@@ -39,6 +39,15 @@
 
     "extend_comment_on_newline": false,
 
+    "lsp": {
+        "discord_presence": {
+            "initialization_options": {
+                "state": "{language:u}",
+                "details": null,
+            },
+        },
+    },
+
     "format_on_save": "off",
 
     "diagnostics": {
@@ -62,7 +71,7 @@
     "inlay_hints": {
         "enabled": true,
         "show_type_hints": false,
-        "show_background": true
+        "show_background": true,
     },
 
     "journal": {
