@@ -40,7 +40,7 @@
             "enabled": true
         },
         "MessagePopoverAPI": {
-            "enabled": false
+            "enabled": true
         },
         "MessageUpdaterAPI": {
             "enabled": true
@@ -415,7 +415,13 @@
             "enabled": true
         },
         "RelationshipNotifier": {
-            "enabled": false
+            "enabled": true,
+            "offlineRemovals": true,
+            "groups": true,
+            "servers": true,
+            "friends": true,
+            "friendRequestCancels": true,
+            "notices": true
         },
         "ReplaceGoogleSearch": {
             "enabled": false
@@ -1390,9 +1396,6 @@
         "MusicRichPresence": {
             "enabled": false
         },
-        "TenorGifSearch": {
-            "enabled": false
-        },
         "AutoJumpToMessage": {
             "enabled": false
         },
@@ -1428,6 +1431,9 @@
         },
         "FixDiscordCss": {
             "enabled": true
+        },
+        "GifProviderSwitcher": {
+            "enabled": false
         }
     },
     "uiElements": {
@@ -1445,7 +1451,7 @@
         "authenticated": false,
         "url": "https://cloud.equicord.org/",
         "settingsSync": false,
-        "settingsSyncVersion": 1791320682033
+        "settingsSyncVersion": 1791635033510
     },
     "ignoreResetWarning": false,
     "userCssVars": {},
