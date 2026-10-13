@@ -44,11 +44,15 @@
             "initialization_options": {
                 "state": "{language:u}",
                 "details": null,
+
+                "idle": {
+                    "details": null
+                }
             },
         },
     },
 
-    "format_on_save": "off",
+    "format_on_save": "on",
 
     "diagnostics": {
         "inline": {
