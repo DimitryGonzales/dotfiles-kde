@@ -756,9 +756,6 @@
         "FastDeleteChannels": {
             "enabled": false
         },
-        "FavouriteAnything": {
-            "enabled": false
-        },
         "FileUpload": {
             "enabled": false
         },
@@ -1313,21 +1310,6 @@
             "enabled": true,
             "disableAnalytics": true
         },
-        "EquicordHelper": {
-            "enabled": true,
-            "noMirroredCamera": false,
-            "removeActivitySection": false,
-            "showYourOwnActivityButtons": false,
-            "forceRoleIcon": false,
-            "restoreFileDownloadButton": false,
-            "noModalAnimation": false,
-            "disableAdoptTagPrompt": false,
-            "jsonGateway": false,
-            "noBulletPoints": false,
-            "accountStandingButton": false,
-            "hideVoiceIndicatorForMutedChannels": false,
-            "noOnboarding": false
-        },
         "Settings": {
             "enabled": true,
             "settingsLocation": "aboveNitro",
@@ -1434,6 +1416,24 @@
         },
         "GifProviderSwitcher": {
             "enabled": false
+        },
+        "EquiTweaks": {
+            "enabled": true,
+            "noMirroredCamera": false,
+            "removeActivitySection": false,
+            "showYourOwnActivityButtons": false,
+            "forceRoleIcon": false,
+            "restoreFileDownloadButton": false,
+            "noModalAnimation": false,
+            "disableAdoptTagPrompt": false,
+            "jsonGateway": false,
+            "noBulletPoints": false,
+            "accountStandingButton": false,
+            "hideVoiceIndicatorForMutedChannels": false,
+            "noOnboarding": false
+        },
+        "FavoriteAnything": {
+            "enabled": false
         }
     },
     "uiElements": {
@@ -1451,7 +1451,7 @@
         "authenticated": false,
         "url": "https://cloud.equicord.org/",
         "settingsSync": false,
-        "settingsSyncVersion": 1791815463885
+        "settingsSyncVersion": 1792531493578
     },
     "ignoreResetWarning": false,
     "userCssVars": {},
