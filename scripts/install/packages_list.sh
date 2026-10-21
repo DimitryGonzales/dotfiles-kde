@@ -5,6 +5,8 @@ packages_list=(
     ente-auth-bin
     equibop-bin
     fluxer-bin
+    heroic-games-launcher-bin
+    insomnia-bin
 
     # KDE
     ark
@@ -26,4 +28,7 @@ packages_list=(
     fuse2
     fuse3
     gamemode lib32-gamemode
+    git
+    gpu-screen-recorder gpu-screen-recorder-gtk
+    jdk-openjdk
 )
