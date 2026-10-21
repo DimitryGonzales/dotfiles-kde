@@ -2,7 +2,7 @@
 
 # Check if the multilib repository is enabled
 if grep -Fxq "#[multilib]" /etc/pacman.conf; then
-    printf "Enable the multilib repository before executing the script!\n" >&2
+    printf "error: enable the multilib repository before executing the script\n" >&2
     exit 1
 fi
 
@@ -10,61 +10,53 @@ fi
 sudo -v
 
 # Script directory
-SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")"
-
-# Check if the necessary packages are installed
-# necessary_packages_file="$HOME/scripts/install/necessary_packages.txt"
-# if ! [[ -f "$necessary_packages_file" ]]; then
-#     printf "Missing necessary packages file: %s\n" "$necessary_packages_file" >&2
-#     exit 1
-# fi
-#
-# if ! pacman -Q "$(cat $necessary_packages_file)" &> /dev/null; then
-#     printf "Missing necessary packages!\n"
-#
-#     read -rp "Install missing packages? [Y/n] " install_missing_packages
-#     if [[ "${install_missing_packages,,}" == "y" || -z "$install_missing_packages" ]]; then
-#         sudo pacman -S --needed "$(cat $necessary_packages_file)" || exit 1
-#     else
-#         exit 0
-#     fi
-# fi
+script_dir="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")"
 
 # Update the system
-printf "Updating the system...\n"
+printf "updating the system...\n"
 
-if ! sudo pacman -Syu; then
-    printf "Failed to update the system!\n" >&2
+if sudo pacman -Syu; then
+    printf "updated the system\n"
+else
+    printf "error: failed to update the system\n" >&2
     exit 1
 fi
 
 # Install paru
-if ! command -v paru; then
-    printf "Installing paru...\n"
+if ! command -v paru &> /dev/null; then
+    printf "installing paru...\n"
 
-    if ! (
+    if (
         sudo pacman -S --needed base-devel git &&
         cd /tmp &&
         git clone https://aur.archlinux.org/paru.git &&
         cd paru &&
         makepkg -si &&
-        cd "$SCRIPT_DIR"
+        cd "$script_dir"
     ); then
-        printf "Failed to install paru!\n" >&2
+        printf "installed paru\n"
+    else
+        printf "error: failed to install paru\n" >&2
         exit 1
     fi
 fi
 
 # Install packages
-PACKAGES_PATH="$SCRIPT_DIR/packages.txt"
+packages_list_path="$script_dir/packages_list.sh"
 
-if [[ -f "$PACKAGES_PATH" ]]; then
-    if ! paru -S "$(cat "$PACKAGES_PATH")"; then
-        printf "Failed to install packages!\n" >&2
+if [[ -f "$packages_list_path" ]]; then
+    source "$packages_list_path"
+
+    printf "installing packages...\n"
+
+    if paru -S --needed "${packages_list[@]}"; then
+        printf "installed packages\n"
+    else
+        printf "error: failed to install packages\n" >&2
         exit 1
     fi
 else
-    printf "Missing packages list: %s" "$PACKAGES_PATH" >&2
+    printf "error: missing packages list(%s)" "$packages_list_path" >&2
     exit 1
 fi
 
