@@ -66,7 +66,7 @@ package_list=(
     bat
     eza
     micro
-    zsh zsh-autosuggestions zsh-completion zsh-pure-prompt zsh-syntax-highlighting
+    zsh zsh-autosuggestions zsh-completions zsh-pure-prompt zsh-syntax-highlighting
 
     # Tools
     gpu-screen-recorder gpu-screen-recorder-gtk

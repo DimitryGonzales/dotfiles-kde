@@ -1,30 +1,48 @@
 #!/usr/bin/env bash
 
+script_dir="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")"
+script_name="$(basename -- "${BASH_SOURCE[0]}")"
+
+log() {
+    local tag
+    if [[ -v script_name ]]; then
+        tag="$script_name"
+    else
+        tag="SCRIPT"
+    fi
+
+    local level="${1^^}"
+
+    if [[ "$level" == "WARNING" || "$level" == "ERROR" ]]; then
+        printf "[%s] [%s] %s\n" "$tag" "$level" "$2" >&2
+    else
+        printf "[%s] [%s] %s\n" "$tag" "$level" "$2"
+    fi
+}
+
 # Check if the multilib repository is enabled
 if grep -Fxq "#[multilib]" /etc/pacman.conf; then
-    printf "error: enable the multilib repository before executing the script\n" >&2
+    log error "enable the multilib repository before executing the script"
     exit 1
 fi
 
 # Elevate privileges
 sudo -v
 
-# Script directory
-script_dir="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")"
-
 # Update the system
-printf "updating the system...\n"
+log info "updating the system..."
 
 if sudo pacman -Syu; then
-    printf "updated the system\n"
+    log success "updated the system"
 else
-    printf "error: failed to update the system\n" >&2
+    log error "failed to update the system"
     exit 1
 fi
 
 # Install paru
 if ! command -v paru &> /dev/null; then
-    printf "installing paru...\n"
+    log warning "paru is not installed"
+    log info "installing paru..."
 
     if (
         sudo pacman -S --needed base-devel git &&
@@ -34,9 +52,9 @@ if ! command -v paru &> /dev/null; then
         makepkg -si &&
         cd "$script_dir"
     ); then
-        printf "installed paru\n"
+        log success "installed paru"
     else
-        printf "error: failed to install paru\n" >&2
+        log error "failed to install paru"
         exit 1
     fi
 fi
@@ -47,18 +65,57 @@ package_list_path="$script_dir/package_list.sh"
 if [[ -f "$package_list_path" ]]; then
     source "$package_list_path"
 
-    printf "installing packages...\n"
+    log info "installing packages..."
 
     if paru -S --needed "${package_list[@]}"; then
-        printf "installed packages\n"
+        log success "installed packages"
     else
-        printf "error: failed to install packages\n" >&2
+        log error "failed to install packages"
         exit 1
     fi
 else
-    printf "error: missing package list(%s)" "$package_list_path" >&2
+    log error "missing package list: $package_list_path"
     exit 1
 fi
+
+# Add user to groups
+group_list_path="$script_dir/group_list.sh"
+
+if [[ -f "$group_list_path" ]]; then
+    source "$group_list_path"
+
+    for group in "${group_list[@]}"; do
+        if groups "$USER" | grep -Fwq "$group"; then
+            log info "$USER is already in the $group group"
+        else
+            if ! getent group "$group" &> /dev/null; then
+                log warning "the $group group doesn't exist"
+                log info "creating the $group group..."
+
+                if sudo groupadd "$group" > /dev/null; then
+                    log success "created the $group group"
+                else
+                    log error "failed to create the $group group"
+                    exit 1
+                fi
+            fi
+
+            log info "adding $USER to the $group group..."
+
+            if sudo gpasswd -a "$USER" "$group" > /dev/null; then
+                log success "added $USER to the $group group"
+            else
+                log error "failed to add $USER to the $group group"
+                exit 1
+            fi
+        fi
+    done
+else
+    log error "missing group list: $group_list_path"
+    exit 1
+fi
+
+exit 0
 
 # KFileDialog Settings
 kwriteconfig6 --file "$HOME/.config/kdeglobals" --group "KFileDialog Settings" --key "Places Icons Auto-resize" false
