@@ -7,6 +7,13 @@ packages_list=(
     fluxer-bin
     heroic-games-launcher-bin
     insomnia-bin
+    lutris
+    steam millennium-bin
+
+    # Fonts
+    ttf-jetbrains-mono-nerd
+    ttf-liberation
+    noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
 
     # KDE
     ark
@@ -31,4 +38,9 @@ packages_list=(
     git
     gpu-screen-recorder gpu-screen-recorder-gtk
     jdk-openjdk
+    mangohud lib32-mangohud
+    mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon
+    micro
+    openrazer-daemon linux-headers polychromatic
+    pipewire lib32-pipewire pipewire-alsa pipewire-audio pipewire-jack lib32-pipewire-jack pipewire-pulse wireplumber
 )
