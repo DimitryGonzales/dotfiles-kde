@@ -2,6 +2,8 @@
 
 Personal dotfiles with configuration files for applications and the [KDE Plasma](https://kde.org/plasma-desktop/) desktop environment.
 
+<br>
+
 ## Installation using [YADM (Yet Another Dotfiles Manager)](https://yadm.io/)
 
 ```bash
