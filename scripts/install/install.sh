@@ -42,21 +42,21 @@ if ! command -v paru &> /dev/null; then
 fi
 
 # Install packages
-packages_list_path="$script_dir/packages_list.sh"
+package_list_path="$script_dir/package_list.sh"
 
-if [[ -f "$packages_list_path" ]]; then
-    source "$packages_list_path"
+if [[ -f "$package_list_path" ]]; then
+    source "$package_list_path"
 
     printf "installing packages...\n"
 
-    if paru -S --needed "${packages_list[@]}"; then
+    if paru -S --needed "${package_list[@]}"; then
         printf "installed packages\n"
     else
         printf "error: failed to install packages\n" >&2
         exit 1
     fi
 else
-    printf "error: missing packages list(%s)" "$packages_list_path" >&2
+    printf "error: missing package list(%s)" "$package_list_path" >&2
     exit 1
 fi
 
