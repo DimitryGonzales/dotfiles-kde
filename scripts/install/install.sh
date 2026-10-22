@@ -115,6 +115,29 @@ else
     exit 1
 fi
 
+# Enable services
+services_path="$script_dir/services.sh"
+
+if [[ -f "$services_path" ]]; then
+    source "$services_path"
+
+    for service in "${services[@]}"; do
+        if systemctl is-enabled "$service" &> /dev/null; then
+            log info "$service is already enabled"
+        else
+            if sudo systemctl enable "$service" > /dev/null; then
+                log success "enabled $service"
+            else
+                log error "failed to enable $service"
+                exit 1
+            fi
+        fi
+    done
+else
+    log error "missing service list: $services_path"
+    exit 1
+fi
+
 exit 0
 
 # KFileDialog Settings
