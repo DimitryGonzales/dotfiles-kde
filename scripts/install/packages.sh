@@ -1,4 +1,4 @@
-package_list=(
+packages=(
     # Browsers
     brave-origin-bin
     torbrowser-launcher

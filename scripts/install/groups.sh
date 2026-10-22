@@ -1,4 +1,4 @@
-group_list=(
+groups=(
     gamemode
     openrazer
     plugdev

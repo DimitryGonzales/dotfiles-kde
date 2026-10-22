@@ -60,31 +60,31 @@ if ! command -v paru &> /dev/null; then
 fi
 
 # Install packages
-package_list_path="$script_dir/package_list.sh"
+packages_path="$script_dir/packages.sh"
 
-if [[ -f "$package_list_path" ]]; then
-    source "$package_list_path"
+if [[ -f "$packages_path" ]]; then
+    source "$packages_path"
 
     log info "installing packages..."
 
-    if paru -S --needed "${package_list[@]}"; then
+    if paru -S --needed "${packages[@]}"; then
         log success "installed packages"
     else
         log error "failed to install packages"
         exit 1
     fi
 else
-    log error "missing package list: $package_list_path"
+    log error "missing package list: $packages_path"
     exit 1
 fi
 
 # Add user to groups
-group_list_path="$script_dir/group_list.sh"
+groups_path="$script_dir/groups.sh"
 
-if [[ -f "$group_list_path" ]]; then
-    source "$group_list_path"
+if [[ -f "$groups_path" ]]; then
+    source "$groups_path"
 
-    for group in "${group_list[@]}"; do
+    for group in "${groups[@]}"; do
         if groups "$USER" | grep -Fwq "$group"; then
             log info "$USER is already in the $group group"
         else
@@ -111,7 +111,7 @@ if [[ -f "$group_list_path" ]]; then
         fi
     done
 else
-    log error "missing group list: $group_list_path"
+    log error "missing group list: $groups_path"
     exit 1
 fi
 
