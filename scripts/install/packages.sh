@@ -9,6 +9,7 @@ packages=(
     jdk-openjdk
     nodejs
     python
+    shellcheck
     zed
 
     # Fonts

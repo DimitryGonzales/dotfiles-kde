@@ -1,8 +1,22 @@
 #!/usr/bin/env bash
 
-script_dir="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")"
-script_name="$(basename -- "${BASH_SOURCE[0]}")"
+# Shell options
+shopt -s dotglob nullglob
 
+# Variables
+script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+script_name="$(basename "${BASH_SOURCE[0]}")"
+
+assets_dir="$script_dir/assets"
+modules_dir="$script_dir/modules"
+
+packages_path="$script_dir/packages.sh"
+groups_path="$script_dir/groups.sh"
+services_path="$script_dir/services.sh"
+
+shell="zsh"
+
+# Functions
 log() {
     local tag
     if [[ -v script_name ]]; then
@@ -27,7 +41,7 @@ if grep -Fxq "#[multilib]" /etc/pacman.conf; then
 fi
 
 # Elevate privileges
-sudo -v
+sudo -v || exit 1
 
 # Update the system
 log info "updating the system..."
@@ -40,8 +54,9 @@ else
 fi
 
 # Install paru
-if ! command -v paru &> /dev/null; then
-    log warning "paru is not installed"
+if command -v paru &> /dev/null; then
+    log info "paru is already installed"
+else
     log info "installing paru..."
 
     if (
@@ -49,8 +64,7 @@ if ! command -v paru &> /dev/null; then
         cd /tmp &&
         git clone https://aur.archlinux.org/paru.git &&
         cd paru &&
-        makepkg -si &&
-        cd "$script_dir"
+        makepkg -si
     ); then
         log success "installed paru"
     else
@@ -60,8 +74,6 @@ if ! command -v paru &> /dev/null; then
 fi
 
 # Install packages
-packages_path="$script_dir/packages.sh"
-
 if [[ -f "$packages_path" ]]; then
     source "$packages_path"
 
@@ -74,20 +86,22 @@ if [[ -f "$packages_path" ]]; then
         exit 1
     fi
 else
-    log error "missing package list: $packages_path"
+    log error "missing packages file: $packages_path"
     exit 1
 fi
 
 # Add user to groups
-groups_path="$script_dir/groups.sh"
-
 if [[ -f "$groups_path" ]]; then
     source "$groups_path"
+
+    log info "adding $USER to groups..."
 
     for group in "${groups[@]}"; do
         if groups "$USER" | grep -Fwq "$group"; then
             log info "$USER is already in the $group group"
         else
+            log info "adding $USER to the $group group..."
+
             if ! getent group "$group" &> /dev/null; then
                 log warning "the $group group doesn't exist"
                 log info "creating the $group group..."
@@ -100,8 +114,6 @@ if [[ -f "$groups_path" ]]; then
                 fi
             fi
 
-            log info "adding $USER to the $group group..."
-
             if sudo gpasswd -a "$USER" "$group" > /dev/null; then
                 log success "added $USER to the $group group"
             else
@@ -111,20 +123,22 @@ if [[ -f "$groups_path" ]]; then
         fi
     done
 else
-    log error "missing group list: $groups_path"
+    log error "missing groups file: $groups_path"
     exit 1
 fi
 
 # Enable services
-services_path="$script_dir/services.sh"
-
 if [[ -f "$services_path" ]]; then
     source "$services_path"
+
+    log info "enabling services..."
 
     for service in "${services[@]}"; do
         if systemctl is-enabled "$service" &> /dev/null; then
             log info "$service is already enabled"
         else
+            log info "enabling $service..."
+
             if sudo systemctl enable "$service" > /dev/null; then
                 log success "enabled $service"
             else
@@ -134,16 +148,58 @@ if [[ -f "$services_path" ]]; then
         fi
     done
 else
-    log error "missing service list: $services_path"
+    log error "missing services file: $services_path"
     exit 1
 fi
 
-exit 0
+# Set default shell
+shell_path="$(command -v "$shell")"
 
-# KFileDialog Settings
-kwriteconfig6 --file "$HOME/.config/kdeglobals" --group "KFileDialog Settings" --key "Places Icons Auto-resize" false
-kwriteconfig6 --file "$HOME/.config/kdeglobals" --group "KFileDialog Settings" --key "Places Icons Static Size" 22
+if [[ "$SHELL" == "$shell_path" ]]; then
+    log info "$shell is already the default shell"
+else
+    log info "setting $shell as the default shell..."
 
-kwriteconfig6 --file "$HOME/.config/kdeglobals" --group "KFileDialog Settings" --key "detailViewIconSize" 32
-kwriteconfig6 --file "$HOME/.config/kdeglobals" --group "KFileDialog Settings" --key "iconViewIconSize" 64
-kwriteconfig6 --file "$HOME/.config/kdeglobals" --group "KFileDialog Settings" --key "listViewIconSize" 32
+    if chsh -s "$shell_path" > /dev/null; then
+        log success "set $shell as the default shell"
+    else
+        log error "failed to set $shell as the default shell"
+        exit 1
+    fi
+fi
+
+# Execute modules
+if [[ -d "$modules_dir" ]]; then
+    modules=("$modules_dir"/*.sh)
+
+    if [[ "${#modules[@]}" -eq 0 ]]; then
+        log info "no modules to execute"
+    else
+        log info "executing modules..."
+
+        for module in "${modules[@]}"; do
+            log info "executing module...: $module"
+
+            source "$module" &&
+            log success "module executed: $module"
+        done
+    fi
+else
+    log info "the modules directory doesn't exist: $modules_dir"
+fi
+
+# Reboot
+log success "script execution fisished"
+
+read -rp "Reboot? [Y/n] " reboot
+
+if [[ "${reboot,,}" == "y" || -z "$reboot" ]]; then
+    printf "Reboot in "
+
+    for i in $(seq 10 -1 1); do
+        printf "%d..." "$i"
+        sleep 1
+    done
+
+    reboot
+fi
