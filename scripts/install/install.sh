@@ -135,14 +135,14 @@ if [[ -f "$services_path" ]]; then
 
     for service in "${services[@]}"; do
         if systemctl is-enabled "$service" &> /dev/null; then
-            log info "$service is already enabled"
+            log info "the $service service is already enabled"
         else
-            log info "enabling $service..."
+            log info "enabling the $service service..."
 
             if sudo systemctl enable "$service" > /dev/null; then
-                log success "enabled $service"
+                log success "enabled the $service service"
             else
-                log error "failed to enable $service"
+                log error "failed to enable the $service service"
                 exit 1
             fi
         fi
