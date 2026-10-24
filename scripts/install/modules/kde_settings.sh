@@ -1,14 +1,20 @@
 set_kde_config_key() {
     local file="$1"
+    local file_name="$(basename "$file")"
+
     local group="$2"
     local key="$3"
     local value="$4"
 
-    if kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value" > /dev/null; then
-        log success "$(basename -- "$file"): set the $group group $key key to $value"
+    if [[ "$(kreadconfig6 --file "$file" --group "$group" --key "$key")" == "$value" ]]; then
+        log info "$file_name: the $group group $key key is already set to $value"
     else
-        log error "$(basename -- "$file"): failed to set the $group group $key key to $value"
-        exit 1
+        if kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value" > /dev/null; then
+            log success "$file_name: set the $group group $key key to $value"
+        else
+            log error "$file_name: failed to set the $group group $key key to $value"
+            exit 1
+        fi
     fi
 }
 
@@ -21,7 +27,7 @@ set_locale_key() {
 }
 
 # Set KFileDialog settings
-log info "setting the KFileDialog settings keys..."
+log info "setting KFileDialog settings keys..."
 
 set_kfiledialog_settings_key "Places Icons Auto-resize" false
 set_kfiledialog_settings_key "Places Icons Static Size" 22
@@ -30,8 +36,8 @@ set_kfiledialog_settings_key "detailViewIconSize" 32
 set_kfiledialog_settings_key "iconViewIconSize" 64
 set_kfiledialog_settings_key "listViewIconSize" 32
 
-# Set locale formats
-log info "setting the locale formats keys..."
+# Set the locale formats
+log info "setting the locale format keys..."
 
 set_locale_key "LANG" "en_US.UTF-8"
 set_locale_key "LC_ADDRESS" "pt_BR.UTF-8"

@@ -27,7 +27,7 @@ log() {
 
     local level="${1^^}"
 
-    if [[ "$level" == "WARNING" || "$level" == "ERROR" ]]; then
+    if [[ "$level" == "ERROR" ]]; then
         printf "[%s] [%s] %s\n" "$tag" "$level" "$2" >&2
     else
         printf "[%s] [%s] %s\n" "$tag" "$level" "$2"
@@ -86,7 +86,7 @@ if [[ -f "$packages_path" ]]; then
         exit 1
     fi
 else
-    log error "missing packages file: $packages_path"
+    log error "the packages file is missing: $packages_path"
     exit 1
 fi
 
@@ -103,7 +103,7 @@ if [[ -f "$groups_path" ]]; then
             log info "adding $USER to the $group group..."
 
             if ! getent group "$group" &> /dev/null; then
-                log warning "the $group group doesn't exist"
+                log info "the $group group doesn't exist"
                 log info "creating the $group group..."
 
                 if sudo groupadd "$group" > /dev/null; then
@@ -123,7 +123,7 @@ if [[ -f "$groups_path" ]]; then
         fi
     done
 else
-    log error "missing groups file: $groups_path"
+    log error "the groups file is missing: $groups_path"
     exit 1
 fi
 
@@ -148,7 +148,7 @@ if [[ -f "$services_path" ]]; then
         fi
     done
 else
-    log error "missing services file: $services_path"
+    log error "the services file is missing: $services_path"
     exit 1
 fi
 
@@ -178,10 +178,12 @@ if [[ -d "$modules_dir" ]]; then
         log info "executing modules..."
 
         for module in "${modules[@]}"; do
-            log info "executing module...: $module"
+            module_name="$(basename "$module")"
+
+            log info "executing the $module_name module..."
 
             source "$module" &&
-            log success "module executed: $module"
+            log success "executed the $module_name module"
         done
     fi
 else
@@ -189,9 +191,9 @@ else
 fi
 
 # Reboot
-log success "script execution fisished"
+log success "script execution finished"
 
-read -rp "Reboot? [Y/n] " reboot
+read -rp "A reboot is necessary to apply all changes. Reboot now? [Y/n] " reboot
 
 if [[ "${reboot,,}" == "y" || -z "$reboot" ]]; then
     printf "Reboot in "
