@@ -4,6 +4,7 @@ packages=(
     torbrowser-launcher
 
     # Dev
+    docker docker-buildx docker-compose
     git
     insomnia-bin
     jdk-openjdk
