@@ -1,4 +1,11 @@
 {
+    "agent": {
+        "dock": "right",
+        "threads_sidebar": {
+            "position": "right",
+        },
+    },
+
     "auto_install_extensions": {
         "discord-presence": true,
         "emmet": true,
@@ -19,7 +26,9 @@
 
     "diff_view_style": "unified",
 
-    "disable_ai": true,
+    "edit_predictions": {
+        "provider": "none",
+    },
 
     "minimap": {
         "show": "auto",
