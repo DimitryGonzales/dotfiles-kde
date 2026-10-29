@@ -1015,7 +1015,7 @@
             "notifyOnNewExcludedQuests": false,
             "notifyOnNewQuests": true,
             "questButtonIndicator": "both",
-            "questButtonBadgeCount": 7,
+            "questButtonBadgeCount": 17,
             "questButtonBadgeColor": 2842239,
             "questButtonLeftClickAction": "open-quests",
             "questButtonMiddleClickAction": "plugin-settings",
@@ -1086,7 +1086,9 @@
             "acknowledgedNotices": {
                 "quest-ban-warning-2026-08-07": true,
                 "quest-ban-warning-2026-08-26": true
-            }
+            },
+            "autoEnrollQuests": false,
+            "autoCompleteQuests": false
         },
         "Quoter": {
             "enabled": false
@@ -1430,9 +1432,24 @@
             "noBulletPoints": false,
             "accountStandingButton": false,
             "hideVoiceIndicatorForMutedChannels": false,
-            "noOnboarding": false
+            "noOnboarding": false,
+            "disableHolidayNotifications": false,
+            "showAllBadges": false,
+            "enableAutoCorrect": false
         },
         "FavoriteAnything": {
+            "enabled": false
+        },
+        "DirectFileDownload": {
+            "enabled": false
+        },
+        "JumpToTop": {
+            "enabled": false
+        },
+        "BetterBackreading": {
+            "enabled": false
+        },
+        "DraftNavigator": {
             "enabled": false
         }
     },
@@ -1451,7 +1468,7 @@
         "authenticated": false,
         "url": "https://cloud.equicord.org/",
         "settingsSync": false,
-        "settingsSyncVersion": 1792531493578
+        "settingsSyncVersion": 1793303147115
     },
     "ignoreResetWarning": false,
     "userCssVars": {},
