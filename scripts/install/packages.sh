@@ -24,7 +24,7 @@ packages=(
     lutris
     mangohud lib32-mangohud
     proton-ge-custom-bin
-    steam millennium-bin
+    steam #millennium-bin
 
     # KDE
     ark 7zip unarchiver unrar
