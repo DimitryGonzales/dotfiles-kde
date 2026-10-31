@@ -10,7 +10,7 @@ if [[ -f "$locale_gen_path" ]]; then
     if [[ -f "$locale_gen_destination" ]] && cmp -s "$locale_gen_path" "$locale_gen_destination"; then
         log info "the locale generation configuration is already applied"
     else
-        log info "applying the locale generation configuration..."
+        log action "applying the locale generation configuration..."
 
         if sudo cp "$locale_gen_path" "$locale_gen_destination" > /dev/null; then
             log success "applied the locale generation configuration"
@@ -19,7 +19,7 @@ if [[ -f "$locale_gen_path" ]]; then
             exit 1
         fi
 
-        log info "generating locales..."
+        log action "generating locales..."
 
         if sudo locale-gen > /dev/null; then
             log success "generated locales"
@@ -37,7 +37,7 @@ if [[ -f "$locale_conf_path" ]]; then
     if [[ -f "$locale_conf_destination" ]] && cmp -s "$locale_conf_path" "$locale_conf_destination"; then
         log info "the locale configuration is already applied"
     else
-        log info "applying the locale configuration..."
+        log action "applying the locale configuration..."
 
         if sudo cp "$locale_conf_path" "$locale_conf_destination" > /dev/null; then
             log success "applied the locale configuration"

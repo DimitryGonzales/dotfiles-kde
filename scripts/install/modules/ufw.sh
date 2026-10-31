@@ -1,7 +1,7 @@
 if sudo ufw status | grep -Fxq "Status: active"; then
     log info "ufw is already enabled"
 else
-    log info "enabling ufw..."
+    log action "enabling ufw..."
 
     if sudo ufw enable > /dev/null; then
         log success "enabled ufw"

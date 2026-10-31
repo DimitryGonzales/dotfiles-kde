@@ -27,7 +27,7 @@ set_locale_key() {
 }
 
 # Set KFileDialog settings
-log info "setting KFileDialog settings keys..."
+log action "setting KFileDialog settings keys..."
 
 set_kfiledialog_settings_key "Places Icons Auto-resize" false
 set_kfiledialog_settings_key "Places Icons Static Size" 22
@@ -37,7 +37,7 @@ set_kfiledialog_settings_key "iconViewIconSize" 64
 set_kfiledialog_settings_key "listViewIconSize" 32
 
 # Set the locale formats
-log info "setting the locale format keys..."
+log action "setting the locale format keys..."
 
 set_locale_key "LANG" "en_US.UTF-8"
 set_locale_key "LC_ADDRESS" "pt_BR.UTF-8"

@@ -14,7 +14,7 @@ if [[ "${#services[@]}" -eq 0 ]]; then
     return 0
 fi
 
-log info "enabling services..."
+log action "enabling services..."
 
 for entry in "${services[@]}"; do
     type="${entry%%:*}"
@@ -33,17 +33,17 @@ for entry in "${services[@]}"; do
             ;;
     esac
 
-    if "${command[@]}" "--$type" is-enabled "$service" &> /dev/null; then
-        log info "$type: $service is already enabled"
+    if "${command[@]}" "--$type" is-enabled --quiet "$service"; then
+        log info "service already enabled: $service ($type)"
         continue
     fi
 
-    if ! "${command[@]}" "--$type" enable "$service" &> /dev/null; then
-        log error "$type: failed to enable $service"
+    if ! "${command[@]}" "--$type" enable --quiet "$service"; then
+        log error "failed to enable service: $service ($type)"
         return 1
     fi
 
-    log success "$type: enabled $service"
+    log success "enabled service: $service ($type)"
 done
 
 return 0

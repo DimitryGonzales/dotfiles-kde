@@ -6,7 +6,7 @@ if [[ -f "$mount_options_path" ]]; then
     if [[ -f "$mount_options_destination" ]] && cmp -s "$mount_options_path" "$mount_options_destination"; then
         log info "the mount options are already applied"
     else
-        log info "applying the mount options..."
+        log action "applying the mount options..."
 
         if sudo cp "$mount_options_path" "$mount_options_destination" > /dev/null; then
             log success "applied the mount options"

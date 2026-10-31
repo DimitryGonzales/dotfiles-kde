@@ -3,12 +3,12 @@ yadm_repository_url="https://github.com/DimitryGonzales/dotfiles-kde.git"
 if yadm status &> /dev/null; then
     log info "a yadm repository already exists"
 else
-    log info "cloning yadm repository...: $yadm_repository_url"
+    log action "cloning yadm repository...: $yadm_repository_url"
 
     if yadm clone "$yadm_repository_url" > /dev/null; then
         log success "cloned yadm repository"
 
-        log info "checking out yadm repository..."
+        log action "checking out yadm repository..."
 
         if yadm checkout --force > /dev/null; then
             log success "checked out yadm repository"

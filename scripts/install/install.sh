@@ -4,33 +4,51 @@
 shopt -s dotglob nullglob
 
 # Variables
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[0;37m'
+RESET='\033[0m'
+
 script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-script_name="$(basename "${BASH_SOURCE[0]}")"
 
 assets_dir="$script_dir/assets"
 modules_dir="$script_dir/modules"
 
 packages_path="$script_dir/packages.sh"
 groups_path="$script_dir/groups.sh"
-services_path="$script_dir/services.sh"
 
 shell="zsh"
 
 # Functions
 log() {
     local tag
-    if [[ -v script_name ]]; then
-        tag="$script_name"
-    else
-        tag="SCRIPT"
-    fi
+    tag="$(basename "${BASH_SOURCE[1]}")"
 
-    local level="${1^^}"
+    local type="${1^^}"
+    local color
 
-    if [[ "$level" == "ERROR" ]]; then
-        printf "[%s] [%s] %s\n" "$tag" "$level" "$2" >&2
+    case "$type" in
+        "INFO") color="$BLUE" ;;
+        "ACTION") color="$CYAN" ;;
+        "SUCCESS") color="$GREEN" ;;
+        "ERROR") color="$RED" ;;
+        *)
+            log error "invalid log type: $type"
+            exit 1
+            ;;
+    esac
+
+    local command=(printf "%b %b %s\n" "${MAGENTA}[$tag]${RESET}" "${color}[$type]${RESET}" "$2")
+
+    if [[ "$type" == "ERROR" ]]; then
+        "${command[@]}" >&2
     else
-        printf "[%s] [%s] %s\n" "$tag" "$level" "$2"
+        "${command[@]}"
     fi
 }
 
@@ -44,7 +62,7 @@ fi
 sudo -v || exit 1
 
 # Update the system
-log info "updating the system..."
+log action "updating the system..."
 
 if sudo pacman -Syu; then
     log success "updated the system"
@@ -57,7 +75,7 @@ fi
 if command -v paru &> /dev/null; then
     log info "paru is already installed"
 else
-    log info "installing paru..."
+    log action "installing paru..."
 
     if (
         sudo pacman -S --needed base-devel git &&
@@ -77,7 +95,7 @@ fi
 if [[ -f "$packages_path" ]]; then
     source "$packages_path"
 
-    log info "installing packages..."
+    log action "installing packages..."
 
     if paru -S --needed "${packages[@]}"; then
         log success "installed packages"
@@ -94,17 +112,17 @@ fi
 if [[ -f "$groups_path" ]]; then
     source "$groups_path"
 
-    log info "adding $USER to groups..."
+    log action "adding $USER to groups..."
 
     for group in "${groups[@]}"; do
         if groups "$USER" | grep -Fwq "$group"; then
             log info "$USER is already in the $group group"
         else
-            log info "adding $USER to the $group group..."
+            log action "adding $USER to the $group group..."
 
             if ! getent group "$group" &> /dev/null; then
                 log info "the $group group doesn't exist"
-                log info "creating the $group group..."
+                log action "creating the $group group..."
 
                 if sudo groupadd "$group" > /dev/null; then
                     log success "created the $group group"
@@ -127,38 +145,13 @@ else
     exit 1
 fi
 
-# Enable services
-if [[ -f "$services_path" ]]; then
-    source "$services_path"
-
-    log info "enabling services..."
-
-    for service in "${services[@]}"; do
-        if systemctl is-enabled "$service" &> /dev/null; then
-            log info "the $service service is already enabled"
-        else
-            log info "enabling the $service service..."
-
-            if sudo systemctl enable "$service" > /dev/null; then
-                log success "enabled the $service service"
-            else
-                log error "failed to enable the $service service"
-                exit 1
-            fi
-        fi
-    done
-else
-    log error "the services file is missing: $services_path"
-    exit 1
-fi
-
 # Set default shell
 shell_path="$(command -v "$shell")"
 
 if [[ "$SHELL" == "$shell_path" ]]; then
     log info "$shell is already the default shell"
 else
-    log info "setting $shell as the default shell..."
+    log action "setting $shell as the default shell..."
 
     if chsh -s "$shell_path" > /dev/null; then
         log success "set $shell as the default shell"
@@ -175,15 +168,19 @@ if [[ -d "$modules_dir" ]]; then
     if [[ "${#modules[@]}" -eq 0 ]]; then
         log info "no modules to execute"
     else
-        log info "executing modules..."
+        log action "executing modules..."
 
         for module in "${modules[@]}"; do
             module_name="$(basename "$module")"
 
-            log info "executing the $module_name module..."
+            log action "executing $module_name..."
 
-            source "$module" &&
-            log success "executed the $module_name module"
+            if ! source "$module"; then
+                log error "failed to execute $module_name"
+                exit 1
+            fi
+
+            log success "executed $module_name"
         done
     fi
 else

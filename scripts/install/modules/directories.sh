@@ -13,7 +13,7 @@ make_directory() {
     fi
 }
 
-log info "creating directories..."
+log action "creating directories..."
 
 # Create software folder
 make_directory "$software_path"
