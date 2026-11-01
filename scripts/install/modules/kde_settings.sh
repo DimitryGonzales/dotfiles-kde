@@ -1,50 +1,77 @@
-set_kde_config_key() {
+# Variables
+config_dir="$HOME/.config"
+
+kfiledialog_keys=(
+    # Places icons
+    "Places Icons Auto-resize:false"
+    "Places Icons Static Size:22"
+
+    # Views icon size
+    "detailViewIconSize:32"
+    "iconViewIconSize:64"
+    "listViewIconSize:32"
+)
+
+locale_keys=(
+    "LANG:en_US.UTF-8"
+    "LC_ADDRESS:pt_BR.UTF-8"
+    "LC_MEASUREMENT:pt_BR.UTF-8"
+    "LC_MONETARY:pt_BR.UTF-8"
+    "LC_NAME:pt_BR.UTF-8"
+    "LC_NUMERIC:pt_BR.UTF-8"
+    "LC_PAPER:pt_BR.UTF-8"
+    "LC_TELEPHONE:pt_BR.UTF-8"
+    "LC_TIME:pt_BR.UTF-8"
+)
+
+# Functions
+set_keys() {
     local file="$1"
-    local file_name="$(basename "$file")"
-
     local group="$2"
-    local key="$3"
-    local value="$4"
+    shift 2
 
-    if [[ "$(kreadconfig6 --file "$file" --group "$group" --key "$key")" == "$value" ]]; then
-        log info "$file_name: the $group group $key key is already set to $value"
-    else
-        if kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value" > /dev/null; then
-            log success "$file_name: set the $group group $key key to $value"
-        else
-            log error "$file_name: failed to set the $group group $key key to $value"
-            exit 1
-        fi
+    local file_name entry key value current_value
+
+    file_name="$(basename "$file")"
+
+    # Check if key list is empty
+    if [[ "${#@}" -eq 0 ]]; then
+        log info "the keys list is empty"
+        return 0
     fi
+
+    # Set keys
+    for entry in "$@"; do
+        key="${entry%%:*}"
+        value="${entry#*:}"
+
+        log action "setting key to $value: $key ($group ($file_name))"
+
+        if ! current_value="$(kreadconfig6 --file "$file" --group "$group" --key "$key")"; then
+            log error "failed to read key"
+            return 1
+        fi
+
+        if [[ "$current_value" == "$value" ]]; then
+            log cancel "key is already set"
+            continue
+        fi
+
+        if ! kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value"; then
+            log error "failed to set key"
+            return 1
+        fi
+
+        log success "set key"
+    done
+
+    return 0
 }
 
-set_kfiledialog_settings_key() {
-    set_kde_config_key "$HOME/.config/kdeglobals" "KFileDialog Settings" "$1" "$2"
-}
+# Set KFileDialog keys
+set_keys "$config_dir/kdeglobals" "KFileDialog Settings" "${kfiledialog_keys[@]}" || return 1
 
-set_locale_key() {
-    set_kde_config_key "$HOME/.config/plasma-localerc" "Formats" "$1" "$2"
-}
+# Set the locale keys
+set_keys "$config_dir/plasma-localerc" "Formats" "${locale_keys[@]}" || return 1
 
-# Set KFileDialog settings
-log action "setting KFileDialog settings keys..."
-
-set_kfiledialog_settings_key "Places Icons Auto-resize" false
-set_kfiledialog_settings_key "Places Icons Static Size" 22
-
-set_kfiledialog_settings_key "detailViewIconSize" 32
-set_kfiledialog_settings_key "iconViewIconSize" 64
-set_kfiledialog_settings_key "listViewIconSize" 32
-
-# Set the locale formats
-log action "setting the locale format keys..."
-
-set_locale_key "LANG" "en_US.UTF-8"
-set_locale_key "LC_ADDRESS" "pt_BR.UTF-8"
-set_locale_key "LC_MEASUREMENT" "pt_BR.UTF-8"
-set_locale_key "LC_MONETARY" "pt_BR.UTF-8"
-set_locale_key "LC_NAME" "pt_BR.UTF-8"
-set_locale_key "LC_NUMERIC" "pt_BR.UTF-8"
-set_locale_key "LC_PAPER" "pt_BR.UTF-8"
-set_locale_key "LC_TELEPHONE" "pt_BR.UTF-8"
-set_locale_key "LC_TIME" "pt_BR.UTF-8"
+return 0

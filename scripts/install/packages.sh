@@ -10,7 +10,7 @@ packages=(
     jdk-openjdk
     nodejs
     python
-    shellcheck
+    shellcheck shfmt
     zed
 
     # Fonts
@@ -55,8 +55,7 @@ packages=(
 
     # System
     btrfs-progs
-    fuse2
-    fuse3
+    fuse2 fuse3
     mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon
     openrazer-daemon linux-headers polychromatic
     opentabletdriver

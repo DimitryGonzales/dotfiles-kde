@@ -1,23 +1,29 @@
+# Variables
 yadm_repository_url="https://github.com/DimitryGonzales/dotfiles-kde.git"
 
-if yadm status &> /dev/null; then
-    log info "a yadm repository already exists"
-else
-    log action "cloning yadm repository...: $yadm_repository_url"
+# Clone yadm reposity
+log action "cloning yadm repository: $yadm_repository_url"
 
-    if yadm clone "$yadm_repository_url" > /dev/null; then
-        log success "cloned yadm repository"
-
-        log action "checking out yadm repository..."
-
-        if yadm checkout --force > /dev/null; then
-            log success "checked out yadm repository"
-        else
-            log error "failed to check out yadm repository"
-            exit 1
-        fi
-    else
-        log error "failed to clone yadm repository"
-        exit 1
-    fi
+if yadm status &>/dev/null; then
+    log cancel "a yadm repository already exists"
+    return 0
 fi
+
+if ! yadm clone --quiet "$yadm_repository_url"; then
+    log error "failed to clone yadm repository"
+    return 1
+fi
+
+log success "cloned yadm repository"
+
+# Checkout yadm repository
+log action "checking out yadm repository"
+
+if ! yadm checkout --force --quiet; then
+    log error "failed to check out yadm repository"
+    return 1
+fi
+
+log success "checked out yadm repository"
+
+return 0

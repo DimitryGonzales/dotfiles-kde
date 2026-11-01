@@ -15,7 +15,6 @@ WHITE='\033[0;37m'
 RESET='\033[0m'
 
 script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-
 assets_dir="$script_dir/assets"
 modules_dir="$script_dir/modules"
 
@@ -33,14 +32,15 @@ log() {
     local color
 
     case "$type" in
-        "INFO") color="$BLUE" ;;
-        "ACTION") color="$CYAN" ;;
-        "SUCCESS") color="$GREEN" ;;
-        "ERROR") color="$RED" ;;
-        *)
-            log error "invalid log type: $type"
-            exit 1
-            ;;
+    "INFO") color="$BLUE" ;;
+    "ACTION") color="$CYAN" ;;
+    "CANCEL") color="$YELLOW" ;;
+    "SUCCESS") color="$GREEN" ;;
+    "ERROR") color="$RED" ;;
+    *)
+        log error "invalid log type: $type"
+        exit 1
+        ;;
     esac
 
     local command=(printf "%b %b %s\n" "${MAGENTA}[$tag]${RESET}" "${color}[$type]${RESET}" "$2")
@@ -62,129 +62,153 @@ fi
 sudo -v || exit 1
 
 # Update the system
-log action "updating the system..."
+log action "updating the system"
 
-if sudo pacman -Syu; then
-    log success "updated the system"
-else
+if ! sudo pacman -Syu; then
     log error "failed to update the system"
     exit 1
 fi
 
-# Install paru
-if command -v paru &> /dev/null; then
-    log info "paru is already installed"
-else
-    log action "installing paru..."
+log success "updated the system"
 
-    if (
+# Install paru
+log action "installing paru"
+
+if command -v paru &>/dev/null; then
+    log cancel "paru is already installed"
+else
+    if ! (
         sudo pacman -S --needed base-devel git &&
-        cd /tmp &&
-        git clone https://aur.archlinux.org/paru.git &&
-        cd paru &&
-        makepkg -si
+            cd /tmp &&
+            git clone https://aur.archlinux.org/paru.git &&
+            cd paru &&
+            makepkg -si
     ); then
-        log success "installed paru"
-    else
         log error "failed to install paru"
         exit 1
     fi
+
+    log success "installed paru"
 fi
 
 # Install packages
-if [[ -f "$packages_path" ]]; then
-    source "$packages_path"
-
-    log action "installing packages..."
-
-    if paru -S --needed "${packages[@]}"; then
-        log success "installed packages"
-    else
-        log error "failed to install packages"
-        exit 1
-    fi
-else
-    log error "the packages file is missing: $packages_path"
+if [[ ! -f "$packages_path" ]]; then
+    log error "the packages list file is missing: $packages_path"
     exit 1
 fi
 
-# Add user to groups
-if [[ -f "$groups_path" ]]; then
-    source "$groups_path"
+log action "sourcing packages list"
 
-    log action "adding $USER to groups..."
+if ! source "$packages_path"; then
+    log error "failed to source packages list"
+    exit 1
+fi
 
-    for group in "${groups[@]}"; do
-        if groups "$USER" | grep -Fwq "$group"; then
-            log info "$USER is already in the $group group"
-        else
-            log action "adding $USER to the $group group..."
+log success "sourced packages list"
 
-            if ! getent group "$group" &> /dev/null; then
-                log info "the $group group doesn't exist"
-                log action "creating the $group group..."
-
-                if sudo groupadd "$group" > /dev/null; then
-                    log success "created the $group group"
-                else
-                    log error "failed to create the $group group"
-                    exit 1
-                fi
-            fi
-
-            if sudo gpasswd -a "$USER" "$group" > /dev/null; then
-                log success "added $USER to the $group group"
-            else
-                log error "failed to add $USER to the $group group"
-                exit 1
-            fi
-        fi
-    done
+if [[ "${#packages[@]}" -eq 0 ]]; then
+    log info "the packages list is empty"
 else
+    log action "installing packages"
+
+    if ! paru -S --needed "${packages[@]}"; then
+        log error "failed to install packages"
+        exit 1
+    fi
+
+    log success "installed packages"
+fi
+
+# Add user to groups
+if [[ ! -f "$groups_path" ]]; then
     log error "the groups file is missing: $groups_path"
     exit 1
 fi
 
-# Set default shell
-shell_path="$(command -v "$shell")"
+log action "sourcing groups list"
 
-if [[ "$SHELL" == "$shell_path" ]]; then
-    log info "$shell is already the default shell"
-else
-    log action "setting $shell as the default shell..."
-
-    if chsh -s "$shell_path" > /dev/null; then
-        log success "set $shell as the default shell"
-    else
-        log error "failed to set $shell as the default shell"
-        exit 1
-    fi
+if ! source "$groups_path"; then
+    log error "failed to source groups list"
+    exit 1
 fi
 
-# Execute modules
-if [[ -d "$modules_dir" ]]; then
-    modules=("$modules_dir"/*.sh)
+log success "sourced groups list"
 
-    if [[ "${#modules[@]}" -eq 0 ]]; then
-        log info "no modules to execute"
-    else
-        log action "executing modules..."
+if [[ "${#groups[@]}" -eq 0 ]]; then
+    log info "the groups list is empty"
+else
+    for group in "${groups[@]}"; do
+        log action "adding user to group: $group"
 
-        for module in "${modules[@]}"; do
-            module_name="$(basename "$module")"
+        if groups "$USER" | grep -Fwq "$group"; then
+            log cancel "user is already in group"
+            continue
+        fi
 
-            log action "executing $module_name..."
+        if ! getent group "$group" &>/dev/null; then
+            log info "group doesn't exist"
 
-            if ! source "$module"; then
-                log error "failed to execute $module_name"
+            log action "creating group"
+
+            if ! sudo groupadd "$group"; then
+                log error "failed to create group"
                 exit 1
             fi
 
-            log success "executed $module_name"
-        done
-    fi
+            log success "created group"
+        fi
+
+        if ! sudo gpasswd -a "$USER" "$group" >/dev/null; then
+            log error "failed to add user to group"
+            exit 1
+        fi
+
+        log success "added user to group"
+    done
+fi
+
+# Set default shell
+if ! shell_path="$(command -v "$shell")"; then
+    log error "failed to define shell path"
+    exit 1
+fi
+
+log action "setting shell as the default: $shell"
+
+if [[ "$SHELL" == "$shell_path" ]]; then
+    log cancel "shell is already the default"
 else
+    if ! chsh -s "$shell_path" >/dev/null; then
+        log error "failed to set shell as the default"
+        exit 1
+    fi
+
+    log success "set shell as the default"
+fi
+
+# Execute modules
+if [[ ! -d "$modules_dir" ]]; then
     log info "the modules directory doesn't exist: $modules_dir"
+    exit 1
+fi
+
+modules=("$modules_dir"/*.sh)
+
+if [[ "${#modules[@]}" -eq 0 ]]; then
+    log info "no modules to execute"
+else
+    for module in "${modules[@]}"; do
+        module_name="$(basename "$module")"
+
+        log action "executing module: $module_name"
+
+        if ! source "$module"; then
+            log error "failed to execute module"
+            exit 1
+        fi
+
+        log success "executed module"
+    done
 fi
 
 # Reboot

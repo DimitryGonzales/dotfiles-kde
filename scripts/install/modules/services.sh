@@ -1,3 +1,4 @@
+# Variables
 services=(
     user:opentabletdriver.service
 
@@ -9,41 +10,43 @@ services=(
     system:ufw.service
 )
 
+# Check if the services list is empty
 if [[ "${#services[@]}" -eq 0 ]]; then
     log info "the services list is empty"
     return 0
 fi
 
-log action "enabling services..."
-
+# Enable services
 for entry in "${services[@]}"; do
     type="${entry%%:*}"
     service="${entry#*:}"
 
     case "$type" in
-        "system")
-            command=(sudo systemctl)
-            ;;
-        "user")
-            command=(systemctl)
-            ;;
-        *)
-            log error "unknown service type: $type"
-            return 1
-            ;;
+    "system")
+        command=(sudo systemctl)
+        ;;
+    "user")
+        command=(systemctl)
+        ;;
+    *)
+        log error "unknown service type: $type"
+        return 1
+        ;;
     esac
 
+    log action "enabling service: $service ($type)"
+
     if "${command[@]}" "--$type" is-enabled --quiet "$service"; then
-        log info "service already enabled: $service ($type)"
+        log cancel "service already enabled"
         continue
     fi
 
     if ! "${command[@]}" "--$type" enable --quiet "$service"; then
-        log error "failed to enable service: $service ($type)"
+        log error "failed to enable service"
         return 1
     fi
 
-    log success "enabled service: $service ($type)"
+    log success "enabled service"
 done
 
 return 0
