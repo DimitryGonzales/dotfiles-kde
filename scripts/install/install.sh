@@ -29,12 +29,12 @@ log() {
     tag="$(basename "${BASH_SOURCE[1]}")"
 
     local type="${1^^}"
+
     local color
 
     case "$type" in
     "INFO") color="$BLUE" ;;
     "ACTION") color="$CYAN" ;;
-    "CANCEL") color="$YELLOW" ;;
     "SUCCESS") color="$GREEN" ;;
     "ERROR") color="$RED" ;;
     *)
@@ -72,11 +72,11 @@ fi
 log success "updated the system"
 
 # Install paru
-log action "installing paru"
-
 if command -v paru &>/dev/null; then
-    log cancel "paru is already installed"
+    log info "paru is already installed"
 else
+    log action "installing paru"
+
     if ! (
         sudo pacman -S --needed base-devel git &&
             cd /tmp &&
@@ -121,7 +121,7 @@ fi
 
 # Add user to groups
 if [[ ! -f "$groups_path" ]]; then
-    log error "the groups file is missing: $groups_path"
+    log error "the group list file is missing: $groups_path"
     exit 1
 fi
 
@@ -138,13 +138,15 @@ if [[ "${#groups[@]}" -eq 0 ]]; then
     log info "the group list is empty"
 else
     for group in "${groups[@]}"; do
-        log action "adding user to group: $group"
-
+        # Check if user is already in the group
         if groups "$USER" | grep -Fwq "$group"; then
-            log cancel "user is already in group"
+            log info "user is already in group: $group"
             continue
         fi
 
+        log action "adding user to group: $group"
+
+        # Check if the group exists
         if ! getent group "$group" &>/dev/null; then
             log info "group doesn't exist"
 
@@ -169,15 +171,15 @@ fi
 
 # Set default shell
 if ! shell_path="$(command -v "$shell")"; then
-    log error "failed to determine the shell path"
+    log error "failed to determine the shell path: $shell"
     exit 1
 fi
 
-log action "setting shell as the default: $shell"
-
 if [[ "$SHELL" == "$shell_path" ]]; then
-    log cancel "shell is already the default"
+    log info "shell is already the default: $shell"
 else
+    log action "setting shell as the default: $shell"
+
     if ! chsh -s "$shell_path" >/dev/null; then
         log error "failed to set shell as the default"
         exit 1
@@ -188,7 +190,7 @@ fi
 
 # Execute modules
 if [[ ! -d "$modules_dir" ]]; then
-    log info "the modules directory doesn't exist: $modules_dir"
+    log error "the modules directory doesn't exist: $modules_dir"
     exit 1
 fi
 

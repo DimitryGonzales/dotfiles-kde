@@ -45,17 +45,19 @@ set_keys() {
         key="${entry%%:*}"
         value="${entry#*:}"
 
-        log action "setting key to $value: $key ($group ($file_name))"
-
+        # Read the current value
         if ! current_value="$(kreadconfig6 --file "$file" --group "$group" --key "$key")"; then
             log error "failed to read key"
             return 1
         fi
 
+        # Compare with the current value
         if [[ "$current_value" == "$value" ]]; then
-            log cancel "key is already set"
+            log info "key is already set to $value: $key ($group ($file_name))"
             continue
         fi
+
+        log action "setting key to $value: $key ($group ($file_name))"
 
         if ! kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value"; then
             log error "failed to set key"

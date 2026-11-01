@@ -1,10 +1,11 @@
-# Enable ufw
-log action "enabling ufw"
-
+# Check if ufw is already enabled
 if sudo ufw status | grep -Fxq "Status: active"; then
-    log cancel "ufw is already enabled"
+    log info "ufw is already enabled"
     return 0
 fi
+
+# Enable ufw
+log action "enabling ufw"
 
 if ! sudo ufw enable >/dev/null; then
     log error "failed to enable ufw"

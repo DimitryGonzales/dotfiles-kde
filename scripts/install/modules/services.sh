@@ -10,7 +10,7 @@ services=(
     system:ufw.service
 )
 
-# Check if the list of services is empty
+# Check if the service list is empty
 if [[ "${#services[@]}" -eq 0 ]]; then
     log info "the list of services is empty"
     return 0
@@ -34,12 +34,13 @@ for entry in "${services[@]}"; do
         ;;
     esac
 
-    log action "enabling service: $service ($type)"
-
+    # Check if the service is already enabled
     if "${command[@]}" "--$type" is-enabled --quiet "$service"; then
-        log cancel "service already enabled"
+        log info "service already enabled: $service ($type)"
         continue
     fi
+
+    log action "enabling service: $service ($type)"
 
     if ! "${command[@]}" "--$type" enable --quiet "$service"; then
         log error "failed to enable service"

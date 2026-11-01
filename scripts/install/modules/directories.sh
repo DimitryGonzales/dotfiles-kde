@@ -9,7 +9,7 @@ directories=(
     "$software_path/prefixes"
 )
 
-# Check if the list of directories is empty
+# Check if the directory list is empty
 if [[ "${#directories[@]}" -eq 0 ]]; then
     log info "the list of directories is empty"
     return 0
@@ -17,12 +17,13 @@ fi
 
 # Create directories
 for directory in "${directories[@]}"; do
-    log action "creating directory: $directory"
-
+    # Check if directory alredy exists
     if [[ -d "$directory" ]]; then
-        log cancel "directory already exists"
+        log info "directory already exists: $directory"
         continue
     fi
+
+    log action "creating directory: $directory"
 
     if ! mkdir -p "$directory"; then
         log error "failed to create directory"

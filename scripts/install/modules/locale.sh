@@ -12,6 +12,7 @@ locale_conf_destination="/etc/$locale_conf_name"
 check_file() {
     local file="$1"
 
+    # Check if the file exists
     if [[ ! -f "$file" ]]; then
         log error "locale file is missing: $file"
         return 1
@@ -24,12 +25,13 @@ copy() {
     local source="$1"
     local destination="$2"
 
-    log action "copying file: $source -> $destination"
-
+    # Compare with the destination file
     if [[ -f "$destination" ]] && cmp -s "$source" "$destination"; then
-        log cancel "file already exists with identical content"
+        log info "file already exists with identical content: $source = $destination"
         return 0
     fi
+
+    log action "copying file: $source -> $destination"
 
     if ! sudo cp "$source" "$destination"; then
         log error "failed to copy file"
@@ -41,7 +43,7 @@ copy() {
     return 0
 }
 
-# Check if the necessary files exist
+# Check if the necessary locale files exist
 check_file "$locale_gen_source" || return 1
 check_file "$locale_conf_source" || return 1
 

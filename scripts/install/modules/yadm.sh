@@ -1,13 +1,14 @@
 # Variables
 yadm_repository_url="https://github.com/DimitryGonzales/dotfiles-kde.git"
 
-# Clone the yadm repository
-log action "cloning yadm repository: $yadm_repository_url"
-
+# Check if a yadm repository already exists
 if yadm status &>/dev/null; then
-    log cancel "a yadm repository already exists"
+    log info "a yadm repository already exists"
     return 0
 fi
+
+# Clone the yadm repository
+log action "cloning yadm repository: $yadm_repository_url"
 
 if ! yadm clone --quiet "$yadm_repository_url"; then
     log error "failed to clone yadm repository"
