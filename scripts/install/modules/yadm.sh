@@ -8,23 +8,23 @@ if yadm status &>/dev/null; then
 fi
 
 # Clone the yadm repository
-log action "cloning yadm repository: $yadm_repository_url"
+log action "cloning the yadm repository: $yadm_repository_url"
 
 if ! yadm clone --quiet "$yadm_repository_url"; then
-    log error "failed to clone yadm repository"
+    log error "failed to clone the yadm repository"
     return 1
 fi
 
-log success "cloned yadm repository"
+log success "cloned the yadm repository"
 
 # Check out the yadm repository
-log action "checking out yadm repository"
+log action "checking out the yadm repository"
 
 if ! yadm checkout --force --quiet; then
-    log error "failed to check out yadm repository"
+    log error "failed to check out the yadm repository"
     return 1
 fi
 
-log success "checked out yadm repository"
+log success "checked out the yadm repository"
 
 return 0

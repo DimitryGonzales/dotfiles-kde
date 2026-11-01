@@ -40,37 +40,37 @@ set_keys() {
         return 0
     fi
 
-    # Set keys
+    # Set the keys
     for entry in "$@"; do
         key="${entry%%:*}"
         value="${entry#*:}"
 
         # Read the current value
         if ! current_value="$(kreadconfig6 --file "$file" --group "$group" --key "$key")"; then
-            log error "failed to read key"
+            log error "failed to read the key"
             return 1
         fi
 
         # Compare with the current value
         if [[ "$current_value" == "$value" ]]; then
-            log info "key is already set to $value: $key ($group ($file_name))"
+            log info "the key is already set to $value: $key ($group ($file_name))"
             continue
         fi
 
-        log action "setting key to $value: $key ($group ($file_name))"
+        log action "setting the key to $value: $key ($group ($file_name))"
 
         if ! kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value"; then
-            log error "failed to set key"
+            log error "failed to set the key"
             return 1
         fi
 
-        log success "set key"
+        log success "set the key"
     done
 
     return 0
 }
 
-# Set KFileDialog keys
+# Set the KFileDialog keys
 set_keys "$config_dir/kdeglobals" "KFileDialog Settings" "${kfiledialog_keys[@]}" || return 1
 
 # Set the locale keys

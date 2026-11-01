@@ -91,104 +91,104 @@ else
     log success "installed paru"
 fi
 
-# Install packages
+# Install the packages
 if [[ ! -f "$packages_path" ]]; then
     log error "the package list file is missing: $packages_path"
     exit 1
 fi
 
-log action "sourcing package list"
+log action "sourcing the package list"
 
 if ! source "$packages_path"; then
-    log error "failed to source package list"
+    log error "failed to source the package list"
     exit 1
 fi
 
-log success "sourced package list"
+log success "sourced the package list"
 
 if [[ "${#packages[@]}" -eq 0 ]]; then
     log info "the package list is empty"
 else
-    log action "installing packages"
+    log action "installing the packages"
 
     if ! paru -S --needed "${packages[@]}"; then
-        log error "failed to install packages"
+        log error "failed to install the packages"
         exit 1
     fi
 
-    log success "installed packages"
+    log success "installed the packages"
 fi
 
-# Add user to groups
+# Add the user to the groups
 if [[ ! -f "$groups_path" ]]; then
     log error "the group list file is missing: $groups_path"
     exit 1
 fi
 
-log action "sourcing group list"
+log action "sourcing the group list"
 
 if ! source "$groups_path"; then
-    log error "failed to source group list"
+    log error "failed to source the group list"
     exit 1
 fi
 
-log success "sourced group list"
+log success "sourced the group list"
 
 if [[ "${#groups[@]}" -eq 0 ]]; then
     log info "the group list is empty"
 else
     for group in "${groups[@]}"; do
-        # Check if user is already in the group
+        # Check if the user is already in the group
         if groups "$USER" | grep -Fwq "$group"; then
-            log info "user is already in group: $group"
+            log info "the user is already in the group: $group"
             continue
         fi
 
-        log action "adding user to group: $group"
+        log action "adding the user to the group: $group"
 
         # Check if the group exists
         if ! getent group "$group" &>/dev/null; then
-            log info "group doesn't exist"
+            log info "the group doesn't exist"
 
-            log action "creating group"
+            log action "creating the group"
 
             if ! sudo groupadd "$group"; then
-                log error "failed to create group"
+                log error "failed to create the group"
                 exit 1
             fi
 
-            log success "created group"
+            log success "created the group"
         fi
 
         if ! sudo gpasswd -a "$USER" "$group" >/dev/null; then
-            log error "failed to add user to group"
+            log error "failed to add the user to the group"
             exit 1
         fi
 
-        log success "added user to group"
+        log success "added the user to the group"
     done
 fi
 
-# Set default shell
+# Set the default shell
 if ! shell_path="$(command -v "$shell")"; then
     log error "failed to determine the shell path: $shell"
     exit 1
 fi
 
 if [[ "$SHELL" == "$shell_path" ]]; then
-    log info "shell is already the default: $shell"
+    log info "the shell is already the default: $shell"
 else
-    log action "setting shell as the default: $shell"
+    log action "setting the shell as the default: $shell"
 
     if ! chsh -s "$shell_path" >/dev/null; then
-        log error "failed to set shell as the default"
+        log error "failed to set the shell as the default"
         exit 1
     fi
 
-    log success "set shell as the default"
+    log success "set the shell as the default"
 fi
 
-# Execute modules
+# Execute the modules
 if [[ ! -d "$modules_dir" ]]; then
     log error "the modules directory doesn't exist: $modules_dir"
     exit 1
@@ -202,19 +202,19 @@ else
     for module in "${modules[@]}"; do
         module_name="$(basename "$module")"
 
-        log action "executing module: $module_name"
+        log action "executing the module: $module_name"
 
         if ! source "$module"; then
-            log error "failed to execute module"
+            log error "failed to execute the module"
             exit 1
         fi
 
-        log success "executed module"
+        log success "executed the module"
     done
 fi
 
 # Reboot
-log success "script execution finished"
+log success "the script has finished executing"
 
 read -rp "A reboot is necessary to apply all changes. Reboot now? [Y/n] " reboot
 

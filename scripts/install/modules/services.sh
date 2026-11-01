@@ -16,7 +16,7 @@ if [[ "${#services[@]}" -eq 0 ]]; then
     return 0
 fi
 
-# Enable services
+# Enable the services
 for entry in "${services[@]}"; do
     type="${entry%%:*}"
     service="${entry#*:}"
@@ -36,18 +36,18 @@ for entry in "${services[@]}"; do
 
     # Check if the service is already enabled
     if "${command[@]}" "--$type" is-enabled --quiet "$service"; then
-        log info "service already enabled: $service ($type)"
+        log info "the service is already enabled: $service ($type)"
         continue
     fi
 
-    log action "enabling service: $service ($type)"
+    log action "enabling the service: $service ($type)"
 
     if ! "${command[@]}" "--$type" enable --quiet "$service"; then
-        log error "failed to enable service"
+        log error "failed to enable the service"
         return 1
     fi
 
-    log success "enabled service"
+    log success "enabled the service"
 done
 
 return 0

@@ -9,7 +9,7 @@ if [[ ! -f "$mount_options_source" ]]; then
     return 1
 fi
 
-# Apply mount options
+# Apply the mount options
 if [[ -f "$mount_options_destination" ]] && cmp -s "$mount_options_source" "$mount_options_destination"; then
     log info "the mount options are already applied: $mount_options_source = $mount_options_destination"
     return 0

@@ -15,22 +15,22 @@ if [[ "${#directories[@]}" -eq 0 ]]; then
     return 0
 fi
 
-# Create directories
+# Create the directories
 for directory in "${directories[@]}"; do
-    # Check if directory alredy exists
+    # Check if the directory already exists
     if [[ -d "$directory" ]]; then
-        log info "directory already exists: $directory"
+        log info "the directory already exists: $directory"
         continue
     fi
 
-    log action "creating directory: $directory"
+    log action "creating the directory: $directory"
 
     if ! mkdir -p "$directory"; then
-        log error "failed to create directory"
+        log error "failed to create the directory"
         return 1
     fi
 
-    log success "created directory"
+    log success "created the directory"
 done
 
 return 0

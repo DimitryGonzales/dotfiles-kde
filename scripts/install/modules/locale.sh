@@ -14,7 +14,7 @@ check_file() {
 
     # Check if the file exists
     if [[ ! -f "$file" ]]; then
-        log error "locale file is missing: $file"
+        log error "the locale file is missing: $file"
         return 1
     fi
 
@@ -27,18 +27,18 @@ copy() {
 
     # Compare with the destination file
     if [[ -f "$destination" ]] && cmp -s "$source" "$destination"; then
-        log info "file already exists with identical content: $source = $destination"
+        log info "the file already exists with identical content: $source = $destination"
         return 0
     fi
 
-    log action "copying file: $source -> $destination"
+    log action "copying the file: $source -> $destination"
 
     if ! sudo cp "$source" "$destination"; then
-        log error "failed to copy file"
+        log error "failed to copy the file"
         return 1
     fi
 
-    log success "copied file"
+    log success "copied the file"
 
     return 0
 }
@@ -50,15 +50,15 @@ check_file "$locale_conf_source" || return 1
 # Apply the locale generation configuration
 copy "$locale_gen_source" "$locale_gen_destination" || return 1
 
-# Generate locales
-log action "generating locales"
+# Generate the locales
+log action "generating the locales"
 
 if ! sudo locale-gen >/dev/null; then
-    log error "failed to generate locales"
+    log error "failed to generate the locales"
     return 1
 fi
 
-log success "generated locales"
+log success "generated the locales"
 
 # Apply the locale configuration
 copy "$locale_conf_source" "$locale_conf_destination" || return 1
