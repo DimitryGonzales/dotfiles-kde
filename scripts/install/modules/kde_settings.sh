@@ -6,7 +6,7 @@ kfiledialog_keys=(
     "Places Icons Auto-resize:false"
     "Places Icons Static Size:22"
 
-    # Views icon size
+    # View icon sizes
     "detailViewIconSize:32"
     "iconViewIconSize:64"
     "listViewIconSize:32"
@@ -34,9 +34,9 @@ set_keys() {
 
     file_name="$(basename "$file")"
 
-    # Check if key list is empty
+    # Check if the key list is empty
     if [[ "${#@}" -eq 0 ]]; then
-        log info "the keys list is empty"
+        log info "the key list is empty"
         return 0
     fi
 

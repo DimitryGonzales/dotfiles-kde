@@ -3,7 +3,7 @@ mount_options_name="mount_options.conf"
 mount_options_source="$assets_dir/$mount_options_name"
 mount_options_destination="/etc/udisks2/$mount_options_name"
 
-# Check if mount options file exist
+# Check if the mount options file exists
 if [[ ! -f "$mount_options_source" ]]; then
     log error "the mount options file is missing: $mount_options_source"
     return 1

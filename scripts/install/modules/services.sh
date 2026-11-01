@@ -10,9 +10,9 @@ services=(
     system:ufw.service
 )
 
-# Check if the services list is empty
+# Check if the list of services is empty
 if [[ "${#services[@]}" -eq 0 ]]; then
-    log info "the services list is empty"
+    log info "the list of services is empty"
     return 0
 fi
 

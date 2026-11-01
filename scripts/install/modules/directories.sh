@@ -9,9 +9,9 @@ directories=(
     "$software_path/prefixes"
 )
 
-# Check if the directories list is empty
+# Check if the list of directories is empty
 if [[ "${#directories[@]}" -eq 0 ]]; then
-    log info "the directories list is empty"
+    log info "the list of directories is empty"
     return 0
 fi
 

@@ -1,7 +1,7 @@
 # Variables
 yadm_repository_url="https://github.com/DimitryGonzales/dotfiles-kde.git"
 
-# Clone yadm reposity
+# Clone the yadm repository
 log action "cloning yadm repository: $yadm_repository_url"
 
 if yadm status &>/dev/null; then
@@ -16,7 +16,7 @@ fi
 
 log success "cloned yadm repository"
 
-# Checkout yadm repository
+# Check out the yadm repository
 log action "checking out yadm repository"
 
 if ! yadm checkout --force --quiet; then

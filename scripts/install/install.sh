@@ -93,21 +93,21 @@ fi
 
 # Install packages
 if [[ ! -f "$packages_path" ]]; then
-    log error "the packages list file is missing: $packages_path"
+    log error "the package list file is missing: $packages_path"
     exit 1
 fi
 
-log action "sourcing packages list"
+log action "sourcing package list"
 
 if ! source "$packages_path"; then
-    log error "failed to source packages list"
+    log error "failed to source package list"
     exit 1
 fi
 
-log success "sourced packages list"
+log success "sourced package list"
 
 if [[ "${#packages[@]}" -eq 0 ]]; then
-    log info "the packages list is empty"
+    log info "the package list is empty"
 else
     log action "installing packages"
 
@@ -125,17 +125,17 @@ if [[ ! -f "$groups_path" ]]; then
     exit 1
 fi
 
-log action "sourcing groups list"
+log action "sourcing group list"
 
 if ! source "$groups_path"; then
-    log error "failed to source groups list"
+    log error "failed to source group list"
     exit 1
 fi
 
-log success "sourced groups list"
+log success "sourced group list"
 
 if [[ "${#groups[@]}" -eq 0 ]]; then
-    log info "the groups list is empty"
+    log info "the group list is empty"
 else
     for group in "${groups[@]}"; do
         log action "adding user to group: $group"
@@ -169,7 +169,7 @@ fi
 
 # Set default shell
 if ! shell_path="$(command -v "$shell")"; then
-    log error "failed to define shell path"
+    log error "failed to determine the shell path"
     exit 1
 fi
 
@@ -217,7 +217,7 @@ log success "script execution finished"
 read -rp "A reboot is necessary to apply all changes. Reboot now? [Y/n] " reboot
 
 if [[ "${reboot,,}" == "y" || -z "$reboot" ]]; then
-    printf "Reboot in "
+    printf "Rebooting in "
 
     for i in $(seq 10 -1 1); do
         printf "%d..." "$i"
