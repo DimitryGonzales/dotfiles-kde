@@ -19,9 +19,6 @@ assets_dir="$script_dir/assets"
 modules_dir="$script_dir/modules"
 
 packages_path="$script_dir/packages.sh"
-groups_path="$script_dir/groups.sh"
-
-shell="zsh"
 
 # Functions
 log() {
@@ -117,75 +114,6 @@ else
     fi
 
     log success "installed the packages"
-fi
-
-# Add the user to the groups
-if [[ ! -f "$groups_path" ]]; then
-    log error "the group list file is missing: $groups_path"
-    exit 1
-fi
-
-log action "sourcing the group list"
-
-if ! source "$groups_path"; then
-    log error "failed to source the group list"
-    exit 1
-fi
-
-log success "sourced the group list"
-
-if [[ "${#groups[@]}" -eq 0 ]]; then
-    log info "the group list is empty"
-else
-    for group in "${groups[@]}"; do
-        # Check if the user is already in the group
-        if groups "$USER" | grep -Fwq "$group"; then
-            log info "the user is already in the group: $group"
-            continue
-        fi
-
-        log action "adding the user to the group: $group"
-
-        # Check if the group exists
-        if ! getent group "$group" &>/dev/null; then
-            log info "the group doesn't exist"
-
-            log action "creating the group"
-
-            if ! sudo groupadd "$group"; then
-                log error "failed to create the group"
-                exit 1
-            fi
-
-            log success "created the group"
-        fi
-
-        if ! sudo gpasswd -a "$USER" "$group" >/dev/null; then
-            log error "failed to add the user to the group"
-            exit 1
-        fi
-
-        log success "added the user to the group"
-    done
-fi
-
-# Set the default shell
-if ! shell_path="$(command -v "$shell")"; then
-    log error "failed to determine the shell path: $shell"
-    exit 1
-fi
-
-if [[ "$SHELL" == "$shell_path" ]]; then
-    log info "the shell is already the default: $shell"
-else
-    log action "setting the shell as the default: $shell"
-
-    if ! chsh -s "$shell_path" >/dev/null; then
-        log error "failed to set the shell as the default"
-        exit 1
-    fi
-
-    log success "set the shell as the default"
 fi
 
 # Execute the modules
