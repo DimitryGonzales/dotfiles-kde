@@ -1,4 +1,3 @@
-# Variables
 mount_options_name="mount_options.conf"
 mount_options_source="$assets_dir/$mount_options_name"
 mount_options_destination="/etc/udisks2/$mount_options_name"

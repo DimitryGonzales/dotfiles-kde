@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-# Shell options
 shopt -s dotglob nullglob
 
-# Variables
 BLACK='\033[0;30m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -20,13 +18,27 @@ modules_dir="$script_dir/modules"
 
 packages_path="$script_dir/packages.sh"
 
-# Functions
+section() {
+    local message="$1"
+
+    # Print a line break if it is not the first section
+    if [[ -v _first_section_printed ]]; then
+        printf "\n"
+    else
+        _first_section_printed=true
+    fi
+
+    printf "%b\n" "${YELLOW}[$message]${RESET}"
+}
+
 log() {
+    local type="${1^^}"
+    local message="$2"
+
     local tag
     tag="$(basename "${BASH_SOURCE[1]}")"
 
-    local type="${1^^}"
-
+    # Determine the type color
     local color
 
     case "$type" in
@@ -40,7 +52,8 @@ log() {
         ;;
     esac
 
-    local command=(printf "%b %b %s\n" "${MAGENTA}[$tag]${RESET}" "${color}[$type]${RESET}" "$2")
+    # Print the log
+    local command=(printf "%b %b %s\n" "${MAGENTA}[$tag]${RESET}" "${color}[$type]${RESET}" "$message")
 
     if [[ "$type" == "ERROR" ]]; then
         "${command[@]}" >&2
@@ -59,6 +72,8 @@ fi
 sudo -v || exit 1
 
 # Update the system
+section "update"
+
 log action "updating the system"
 
 if ! sudo pacman -Syu; then
@@ -69,6 +84,8 @@ fi
 log success "updated the system"
 
 # Install paru
+section "paru"
+
 if command -v paru &>/dev/null; then
     log info "paru is already installed"
 else
@@ -89,6 +106,8 @@ else
 fi
 
 # Install the packages
+section "packages"
+
 if [[ ! -f "$packages_path" ]]; then
     log error "the package list file is missing: $packages_path"
     exit 1
@@ -117,6 +136,8 @@ else
 fi
 
 # Execute the modules
+section "modules"
+
 if [[ ! -d "$modules_dir" ]]; then
     log error "the modules directory doesn't exist: $modules_dir"
     exit 1
@@ -128,9 +149,12 @@ if [[ "${#modules[@]}" -eq 0 ]]; then
     log info "no modules to execute"
 else
     for module in "${modules[@]}"; do
-        module_name="$(basename "$module")"
+        module_file="$(basename "$module")"
+        module_name="${module_file%.sh}"
 
-        log action "executing the module: $module_name"
+        section "modules > $module_name"
+
+        log action "executing the module: $module_file"
 
         if ! source "$module"; then
             log error "failed to execute the module"
@@ -141,7 +165,9 @@ else
     done
 fi
 
-# Reboot
+# Finish/Reboot
+section "finish/reboot"
+
 log success "the script has finished executing"
 
 read -rp "A reboot is necessary to apply all changes. Reboot now? [Y/n] " reboot

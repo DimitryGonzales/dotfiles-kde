@@ -1,4 +1,3 @@
-# Variables
 groups=(
     docker
     gamemode

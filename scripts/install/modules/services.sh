@@ -1,4 +1,3 @@
-# Variables
 services=(
     user:opentabletdriver.service
 

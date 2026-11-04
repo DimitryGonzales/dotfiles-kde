@@ -1,4 +1,3 @@
-# Variables
 config_dir="$HOME/.config"
 
 kfiledialog_keys=(
@@ -24,15 +23,14 @@ locale_keys=(
     "LC_TIME:pt_BR.UTF-8"
 )
 
-# Functions
 set_keys() {
     local file="$1"
     local group="$2"
     shift 2
 
-    local file_name entry key value current_value
-
+    local file_name scope entry key value current_value
     file_name="$(basename "$file")"
+    scope="$file_name > $group"
 
     # Check if the key list is empty
     if [[ "${#@}" -eq 0 ]]; then
@@ -53,11 +51,11 @@ set_keys() {
 
         # Compare with the current value
         if [[ "$current_value" == "$value" ]]; then
-            log info "the key is already set to $value: $key ($group ($file_name))"
+            log info "the key is already set to $value: $key ($scope)"
             continue
         fi
 
-        log action "setting the key to $value: $key ($group ($file_name))"
+        log action "setting the key to $value: $key ($scope)"
 
         if ! kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value"; then
             log error "failed to set the key"

@@ -1,4 +1,3 @@
-# Variables
 shell="zsh"
 
 # Determine the shell path

@@ -1,4 +1,3 @@
-# Variables
 software_path="$HOME/software"
 
 directories=(

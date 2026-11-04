@@ -1,4 +1,3 @@
-# Variables
 yadm_repository_url="https://github.com/DimitryGonzales/dotfiles-kde.git"
 
 # Check if a yadm repository already exists
