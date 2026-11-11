@@ -5,6 +5,7 @@ services=(
     system:paccache.timer
     system:plasmalogin.service
     system:systemd-oomd.service
+    system:systemd-resolved.service
     system:tor.service
     system:ufw.service
 )
