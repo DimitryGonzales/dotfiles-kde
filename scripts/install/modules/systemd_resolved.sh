@@ -29,12 +29,13 @@ if [[ ! -f "$fallback_dns_conf_source" ]]; then
     return 1
 fi
 
-# Disable the fallback DNS functionality
+# Check if the fallback dns functionality is disabled
 if [[ -f "$fallback_dns_conf_destination" ]] && cmp -s "$fallback_dns_conf_source" "$fallback_dns_conf_destination"; then
     log info "the fallback dns functionality is already disabled: $fallback_dns_conf_source = $fallback_dns_conf_destination"
     return 0
 fi
 
+# Check if the systemd-resolved config folder exists
 if [[ -d "$resolved_conf_path" ]]; then
     log info "the systemd-resolved config folder already exists: $resolved_conf_path"
 else
@@ -48,6 +49,7 @@ else
     log success "created the systemd-resolved config folder"
 fi
 
+# Disable the fallback dns functionality
 log action "disabling the fallback dns functionality: $fallback_dns_conf_source -> $fallback_dns_conf_destination"
 
 if ! sudo cp "$fallback_dns_conf_source" "$fallback_dns_conf_destination"; then
