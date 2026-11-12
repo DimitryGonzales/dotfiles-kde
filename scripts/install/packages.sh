@@ -57,7 +57,6 @@ packages=(
     btrfs-progs
     fuse2 fuse3
     mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon
-    openrazer-daemon linux-headers polychromatic
     opentabletdriver
     pacman-contrib
     pipewire lib32-pipewire pipewire-alsa pipewire-audio pipewire-jack lib32-pipewire-jack pipewire-pulse wireplumber
@@ -71,6 +70,7 @@ packages=(
 
     # Tools
     gpu-screen-recorder gpu-screen-recorder-gtk
+    piper
     spotify-launcher
     yadm
     yt-dlp

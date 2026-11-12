@@ -1,8 +1,6 @@
 groups=(
     docker
     gamemode
-    openrazer
-    plugdev
 )
 
 # Check if the group list is empty
