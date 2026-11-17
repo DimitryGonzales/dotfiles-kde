@@ -1,6 +1,7 @@
 packages=(
     # Browsers
     brave-origin-bin
+    librewolf
     torbrowser-launcher
 
     # Dev
@@ -69,6 +70,7 @@ packages=(
     zsh zsh-autosuggestions zsh-completions zsh-pure-prompt zsh-syntax-highlighting
 
     # Tools
+    constrict
     gpu-screen-recorder gpu-screen-recorder-gtk
     piper
     spotify-launcher
