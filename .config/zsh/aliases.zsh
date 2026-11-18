@@ -13,6 +13,3 @@ alias lsa="eza -lagh --icons --hyperlink --group-directories-first"
 alias clean="sudo rm -r /var/cache/pacman/pkg/download-*; yes | paru -Sccd"
 alias p="paru"
 alias update="sudo reflector --verbose --country Brazil --sort age --save /etc/pacman.d/mirrorlist && paru"
-
-# yt-dlp
-alias x="yt-dlp --cookies $HOME/Documents/cookies/x.com_cookies.txt"
