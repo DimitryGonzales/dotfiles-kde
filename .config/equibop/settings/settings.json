@@ -170,9 +170,6 @@
             "enabled": false,
             "toolbarDevMenu": false
         },
-        "ExpressionCloner": {
-            "enabled": false
-        },
         "F8Break": {
             "enabled": false
         },
@@ -412,7 +409,8 @@
             "enabled": false
         },
         "ReadAllNotificationsButton": {
-            "enabled": true
+            "enabled": true,
+            "compact": false
         },
         "RelationshipNotifier": {
             "enabled": true,
@@ -483,7 +481,8 @@
         "SilentMessageToggle": {
             "enabled": true,
             "persistState": "none",
-            "autoDisable": true
+            "autoDisable": true,
+            "silent": false
         },
         "SilentTyping": {
             "enabled": true,
@@ -1310,7 +1309,8 @@
         },
         "NoTrack": {
             "enabled": true,
-            "disableAnalytics": true
+            "disableAnalytics": true,
+            "allowBadgeTracking": true
         },
         "Settings": {
             "enabled": true,
@@ -1435,7 +1435,8 @@
             "noOnboarding": false,
             "disableHolidayNotifications": false,
             "showAllBadges": false,
-            "enableAutoCorrect": false
+            "enableAutoCorrect": false,
+            "gifPickerTyping": false
         },
         "FavoriteAnything": {
             "enabled": false
@@ -1450,6 +1451,24 @@
             "enabled": false
         },
         "DraftNavigator": {
+            "enabled": false
+        },
+        "ExpressionManager": {
+            "enabled": false
+        },
+        "MutedServersActivityBadge": {
+            "enabled": false
+        },
+        "BetterSearch": {
+            "enabled": false
+        },
+        "BetterMutualServers": {
+            "enabled": false
+        },
+        "BetterPollDetails": {
+            "enabled": false
+        },
+        "DuplicateCategory": {
             "enabled": false
         }
     },
@@ -1468,10 +1487,11 @@
         "authenticated": false,
         "url": "https://cloud.equicord.org/",
         "settingsSync": false,
-        "settingsSyncVersion": 1793303147115
+        "settingsSyncVersion": 1794947885438
     },
     "ignoreResetWarning": false,
     "userCssVars": {},
     "windowsMaterial": "none",
-    "nativeTitleBar": false
+    "nativeTitleBar": false,
+    "noRoundCorners": false
 }
