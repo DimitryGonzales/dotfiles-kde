@@ -47,12 +47,12 @@ packages=(
     veracrypt
 
     # Social
-    equibop-bin
     element-desktop
     fluxer-bin
     session-desktop-bin
     signal-desktop
     telegram-desktop
+    vesktop-bin
 
     # System
     btrfs-progs
@@ -71,6 +71,7 @@ packages=(
 
     # Tools
     constrict
+    gallery-dl
     gpu-screen-recorder gpu-screen-recorder-gtk
     piper
     spotify-launcher
