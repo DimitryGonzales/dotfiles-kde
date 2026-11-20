@@ -1,6 +1,0 @@
-[General]
-JPEGQuality=100
-
-[ImageView]
-AlphaBackgroundMode=AbstractImageView::AlphaBackgroundCheckBoard
-AnimationMethod=DocumentView::GLAnimation
