@@ -15,6 +15,7 @@ packages=(
     zed
 
     # Fonts
+    inter-font
     ttf-jetbrains-mono-nerd
     ttf-liberation
     noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
