@@ -38,7 +38,7 @@ packages=(
     konsole
     partitionmanager
     plasma-login-manager
-    plasma-meta
+    plasma-meta bibata-cursor-theme-bin darkly-bin darkly-gtk-git
 
     # Security
     ente-auth-bin
