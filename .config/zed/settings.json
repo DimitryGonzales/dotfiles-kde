@@ -160,6 +160,7 @@
 
     "colorize_brackets": true,
 
+    "ui_font_family": "Inter",
     "ui_font_features": {
         "calt": false,
     },
