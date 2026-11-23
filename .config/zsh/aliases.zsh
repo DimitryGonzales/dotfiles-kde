@@ -12,4 +12,3 @@ alias lsa="eza -lagh --icons --hyperlink --group-directories-first"
 # Packages
 alias clean="sudo rm -r /var/cache/pacman/pkg/download-*; yes | paru -Sccd"
 alias p="paru"
-alias update="sudo reflector --verbose --country Brazil --sort age --save /etc/pacman.d/mirrorlist && paru"
