@@ -118,7 +118,7 @@ if [[ ! -f "$packages_path" ]]; then
     exit 1
 fi
 
-log action "sourcing the package list"
+log action "sourcing the package list: $packages_path"
 
 if ! source "$packages_path"; then
     log error "failed to source the package list"

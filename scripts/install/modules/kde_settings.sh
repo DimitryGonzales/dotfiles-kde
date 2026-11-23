@@ -23,7 +23,7 @@ locale_keys=(
     "LC_TIME:pt_BR.UTF-8"
 )
 
-set_keys() {
+set_kde_keys() {
     local file="$1"
     local group="$2"
     shift 2
@@ -43,14 +43,8 @@ set_keys() {
         key="${entry%%:*}"
         value="${entry#*:}"
 
-        # Read the current value
-        if ! current_value="$(kreadconfig6 --file "$file" --group "$group" --key "$key")"; then
-            log error "failed to read the key"
-            return 1
-        fi
-
-        # Compare with the current value
-        if [[ "$current_value" == "$value" ]]; then
+        # Check if the key is already set to the new value
+        if [[ "$(kreadconfig6 --file "$file" --group "$group" --key "$key")" == "$value" ]]; then
             log info "the key is already set to $value: $key ($scope)"
             continue
         fi
@@ -69,9 +63,9 @@ set_keys() {
 }
 
 # Set the KFileDialog keys
-set_keys "$config_dir/kdeglobals" "KFileDialog Settings" "${kfiledialog_keys[@]}" || return 1
+set_kde_keys "$config_dir/kdeglobals" "KFileDialog Settings" "${kfiledialog_keys[@]}" || return 1
 
 # Set the locale keys
-set_keys "$config_dir/plasma-localerc" "Formats" "${locale_keys[@]}" || return 1
+set_kde_keys "$config_dir/plasma-localerc" "Formats" "${locale_keys[@]}" || return 1
 
 return 0
