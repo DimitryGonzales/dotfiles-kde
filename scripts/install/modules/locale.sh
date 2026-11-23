@@ -6,47 +6,26 @@ locale_conf_name="locale.conf"
 locale_conf_source="$assets_dir/$locale_conf_name"
 locale_conf_destination="/etc/$locale_conf_name"
 
-check_file() {
-    local file="$1"
+# Check if the locale generation configuration file exists
+if [[ ! -f "$locale_gen_source" ]]; then
+    log error "the locale generation configuration file is missing: $locale_gen_source"
+    return 1
+fi
 
-    # Check if the file exists
-    if [[ ! -f "$file" ]]; then
-        log error "the locale file is missing: $file"
+# Check if the locale generation configuration is already applied
+if [[ -f "$locale_gen_destination" ]] && cmp -s "$locale_gen_source" "$locale_gen_destination"; then
+    log info "the locale generation configuration is already applied: $locale_gen_source = $locale_gen_destination"
+else
+    # Apply the locale generation configuration
+    log action "applying the locale generation configuration: $locale_gen_source -> $locale_gen_destination"
+
+    if ! sudo cp "$locale_gen_source" "$locale_gen_destination"; then
+        log error "failed to apply the locale generation configuration"
         return 1
     fi
 
-    return 0
-}
-
-copy() {
-    local source="$1"
-    local destination="$2"
-
-    # Compare with the destination file
-    if [[ -f "$destination" ]] && cmp -s "$source" "$destination"; then
-        log info "the file already exists with identical content: $source = $destination"
-        return 0
-    fi
-
-    # Copy the file
-    log action "copying the file: $source -> $destination"
-
-    if ! sudo cp "$source" "$destination"; then
-        log error "failed to copy the file"
-        return 1
-    fi
-
-    log success "copied the file"
-
-    return 0
-}
-
-# Check if the necessary locale files exist
-check_file "$locale_gen_source" || return 1
-check_file "$locale_conf_source" || return 1
-
-# Apply the locale generation configuration
-copy "$locale_gen_source" "$locale_gen_destination" || return 1
+    log success "applied the locale generation configuration"
+fi
 
 # Generate the locales
 log action "generating the locales"
@@ -58,7 +37,26 @@ fi
 
 log success "generated the locales"
 
+# Check if the locale configuration file exists
+if [[ ! -f "$locale_conf_source" ]]; then
+    log error "the locale configuration file is missing: $locale_conf_source"
+    return 1
+fi
+
+# Check if the locale generation configuration is already applied
+if [[ -f "$locale_conf_destination" ]] && cmp -s "$locale_conf_source" "$locale_conf_destination"; then
+    log info "the locale configuration is already applied: $locale_conf_source = $locale_conf_destination"
+    return 0
+fi
+
 # Apply the locale configuration
-copy "$locale_conf_source" "$locale_conf_destination" || return 1
+log action "applying the locale configuration: $locale_conf_source -> $locale_conf_destination"
+
+if ! sudo cp "$locale_conf_source" "$locale_conf_destination"; then
+    log error "failed to apply the locale configuration"
+    return 1
+fi
+
+log success "applied the locale configuration"
 
 return 0

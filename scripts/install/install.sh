@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+# Shell options
 shopt -s dotglob nullglob
 
+# Variables
 BLACK='\033[0;30m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -14,10 +16,15 @@ RESET='\033[0m'
 
 script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 assets_dir="$script_dir/assets"
-modules_dir="$script_dir/modules"
+
+paru_package="paru-bin"
 
 packages_path="$script_dir/packages.sh"
 
+modules_dir="$script_dir/modules"
+modules=("$modules_dir"/*.sh)
+
+# Functions
 section() {
     local message="$1"
 
@@ -35,12 +42,10 @@ log() {
     local type="${1^^}"
     local message="$2"
 
-    local tag
+    local tag color
     tag="$(basename "${BASH_SOURCE[1]}")"
 
     # Determine the type color
-    local color
-
     case "$type" in
     "INFO") color="$BLUE" ;;
     "ACTION") color="$CYAN" ;;
@@ -94,8 +99,8 @@ else
     if ! (
         sudo pacman -S --needed base-devel git &&
             cd /tmp &&
-            git clone https://aur.archlinux.org/paru.git &&
-            cd paru &&
+            git clone "https://aur.archlinux.org/$paru_package.git" &&
+            cd "$paru_package" &&
             makepkg -si
     ); then
         log error "failed to install paru"
@@ -142,8 +147,6 @@ if [[ ! -d "$modules_dir" ]]; then
     log error "the modules directory doesn't exist: $modules_dir"
     exit 1
 fi
-
-modules=("$modules_dir"/*.sh)
 
 if [[ "${#modules[@]}" -eq 0 ]]; then
     log info "no modules to execute"
