@@ -1,7 +1,7 @@
 packages=(
     # Browsers
     brave-origin-bin
-    librewolf
+    mullvad-browser-bin
     torbrowser-launcher
 
     # Dev
