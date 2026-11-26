@@ -21,12 +21,13 @@ else
     log success "enabled the systemd-resolved mode"
 fi
 
-# Check if the fallback dns config file exists
+# Check if the fallback dns configuration file exists
 if [[ ! -f "$fallback_dns_conf_source" ]]; then
     log error "the fallback dns config file is missing: $fallback_dns_conf_source"
     return 1
 fi
 
+# Apply the fallback dns configuration
 copy_file "$fallback_dns_conf_source" "$fallback_dns_conf_destination" || return 1
 
 return 0

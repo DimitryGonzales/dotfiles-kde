@@ -8,6 +8,7 @@ if [[ ! -f "$reflector_conf_source" ]]; then
     return 1
 fi
 
+# Apply the reflector configuration
 copy_file "$reflector_conf_source" "$reflector_conf_destination" || return 1
 
 return 0
