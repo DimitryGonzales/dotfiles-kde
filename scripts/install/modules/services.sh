@@ -4,6 +4,7 @@ services=(
     system:docker.socket
     system:paccache.timer
     system:plasmalogin.service
+    system:reflector.timer
     system:systemd-oomd.service
     system:systemd-resolved.service
     system:tor.service
