@@ -1,6 +1,7 @@
 groups=(
     docker
     gamemode
+    games
 )
 
 # Check if the group list is empty
