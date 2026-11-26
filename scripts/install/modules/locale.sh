@@ -12,20 +12,8 @@ if [[ ! -f "$locale_gen_source" ]]; then
     return 1
 fi
 
-# Check if the locale generation configuration is already applied
-if [[ -f "$locale_gen_destination" ]] && cmp -s "$locale_gen_source" "$locale_gen_destination"; then
-    log info "the locale generation configuration is already applied: $locale_gen_source = $locale_gen_destination"
-else
-    # Apply the locale generation configuration
-    log action "applying the locale generation configuration: $locale_gen_source -> $locale_gen_destination"
-
-    if ! sudo cp "$locale_gen_source" "$locale_gen_destination"; then
-        log error "failed to apply the locale generation configuration"
-        return 1
-    fi
-
-    log success "applied the locale generation configuration"
-fi
+# Apply the locale generation configuration
+copy_file "$locale_gen_source" "$locale_gen_destination" || return 1
 
 # Generate the locales
 log action "generating the locales"
@@ -43,20 +31,7 @@ if [[ ! -f "$locale_conf_source" ]]; then
     return 1
 fi
 
-# Check if the locale generation configuration is already applied
-if [[ -f "$locale_conf_destination" ]] && cmp -s "$locale_conf_source" "$locale_conf_destination"; then
-    log info "the locale configuration is already applied: $locale_conf_source = $locale_conf_destination"
-    return 0
-fi
-
 # Apply the locale configuration
-log action "applying the locale configuration: $locale_conf_source -> $locale_conf_destination"
-
-if ! sudo cp "$locale_conf_source" "$locale_conf_destination"; then
-    log error "failed to apply the locale configuration"
-    return 1
-fi
-
-log success "applied the locale configuration"
+copy_file "$locale_conf_source" "$locale_conf_destination" || return 1
 
 return 0

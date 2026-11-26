@@ -4,14 +4,12 @@
 shopt -s dotglob nullglob
 
 # Variables
-BLACK='\033[0;30m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
-WHITE='\033[0;37m'
 RESET='\033[0m'
 
 script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
@@ -35,22 +33,35 @@ section() {
         _first_section_printed=true
     fi
 
-    printf "%b\n" "${YELLOW}[$message]${RESET}"
+    # Print the message
+    printf "%b[%s]%b\n" "$YELLOW" "$message" "$RESET"
 }
 
 log() {
     local type="${1^^}"
     local message="$2"
 
-    local tag color
-    tag="$(basename "${BASH_SOURCE[1]}")"
+    # Determine the calling file
+    local file="${BASH_SOURCE[0]}"
+    local source_file
+
+    for source_file in "${BASH_SOURCE[@]}"; do
+        if [[ "$source_file" != "$file" ]]; then
+            file="$source_file"
+            break
+        fi
+    done
+
+    file="$(basename "$file")"
 
     # Determine the type color
+    local type_color
+
     case "$type" in
-    "INFO") color="$BLUE" ;;
-    "ACTION") color="$CYAN" ;;
-    "SUCCESS") color="$GREEN" ;;
-    "ERROR") color="$RED" ;;
+    "INFO") type_color="$BLUE" ;;
+    "ACTION") type_color="$CYAN" ;;
+    "SUCCESS") type_color="$GREEN" ;;
+    "ERROR") type_color="$RED" ;;
     *)
         log error "invalid log type: $type"
         exit 1
@@ -58,13 +69,67 @@ log() {
     esac
 
     # Print the log
-    local command=(printf "%b %b %s\n" "${MAGENTA}[$tag]${RESET}" "${color}[$type]${RESET}" "$message")
+    local command=(
+        printf "%b[%s]%b %b[%s]%b %s\n"
+        "$MAGENTA" "$file" "$RESET"
+        "$type_color" "$type" "$RESET"
+        "$message"
+    )
 
     if [[ "$type" == "ERROR" ]]; then
         "${command[@]}" >&2
     else
         "${command[@]}"
     fi
+}
+
+copy_file() {
+    local source="$1"
+    local destination="$2"
+
+    local destination_directory
+    destination_directory="$(dirname "$destination")"
+
+    # Check if the source file exists
+    if [[ ! -f "$source" ]]; then
+        log error "the source file is missing: $source"
+        return 1
+    fi
+
+    # Use elevated privileges for destinations outside the home directory
+    local prefix=()
+
+    [[ "$destination" != "$HOME/"* ]] && prefix=(sudo)
+
+    # Check whether the destination already exists and if is identical to the source
+    if [[ -f "$destination" ]] && cmp -s "$source" "$destination"; then
+        log info "the destination already exists and is identical to the source: $source = $destination"
+        return 0
+    fi
+
+    # Create the destination directory if it does not exist
+    if [[ ! -d "$destination_directory" ]]; then
+        log action "creating the destination directory: $destination_directory"
+
+        if ! "${prefix[@]}" mkdir -p "$destination_directory"; then
+            log error "failed to create the destination directory"
+            return 1
+        fi
+
+        log success "created the destination directory"
+    fi
+
+    # Copy the source to the destination
+    log action "copying the source to the destination: $source -> $destination"
+
+    if ! "${prefix[@]}" cp -T "$source" "$destination"; then
+        log error "failed to copy the source to the destination"
+        return 1
+    fi
+
+    log success "copied the source to the destination"
+
+    return 0
 }
 
 # Check if the multilib repository is enabled

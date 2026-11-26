@@ -9,18 +9,6 @@ if [[ ! -f "$mount_options_source" ]]; then
 fi
 
 # Apply the mount options
-if [[ -f "$mount_options_destination" ]] && cmp -s "$mount_options_source" "$mount_options_destination"; then
-    log info "the mount options are already applied: $mount_options_source = $mount_options_destination"
-    return 0
-fi
-
-log action "applying the mount options: $mount_options_source -> $mount_options_destination"
-
-if ! sudo cp "$mount_options_source" "$mount_options_destination"; then
-    log error "failed to apply the mount options"
-    return 1
-fi
-
-log success "applied the mount options"
+copy_file "$mount_options_source" "$mount_options_destination" || return 1
 
 return 0

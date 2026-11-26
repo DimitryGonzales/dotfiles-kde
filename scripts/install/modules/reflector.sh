@@ -8,17 +8,6 @@ if [[ ! -f "$reflector_conf_source" ]]; then
     return 1
 fi
 
-# Check if the reflector configuration is already applied
-if [[ -f "$reflector_conf_destination" ]] && cmp -s "$reflector_conf_source" "$reflector_conf_destination"; then
-    log info "the reflector configuration is already applied: $reflector_conf_source = $reflector_conf_destination"
-else
-    # Apply the reflector configuration
-    log action "applying the reflector configuration: $reflector_conf_source -> $reflector_conf_destination"
+copy_file "$reflector_conf_source" "$reflector_conf_destination" || return 1
 
-    if ! sudo cp "$reflector_conf_source" "$reflector_conf_destination"; then
-        log error "failed to apply the reflector configuration"
-        return 1
-    fi
-
-    log success "applied the reflector configuration"
-fi
+return 0
